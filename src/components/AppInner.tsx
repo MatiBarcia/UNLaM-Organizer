@@ -129,6 +129,7 @@ export function AppInner({ carrera }: AppInnerProps) {
               onRemoveMateria={removeMateria}
               onUpdateGrades={updateGrades}
               showCuatrimestre={!carrera.cuatrimestreEstimado}
+              showAnio={!carrera.anioEstimado}
             />
           )}
         </div>

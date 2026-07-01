@@ -17,6 +17,8 @@ interface TablaViewProps {
   ) => void;
   /** false cuando el cuatrimestre de la carrera fue estimado (el plan oficial solo publica el año) */
   showCuatrimestre?: boolean;
+  /** false cuando el año de la carrera también fue estimado (el plan oficial no publica ni año ni cuatrimestre) */
+  showAnio?: boolean;
 }
 
 const ALL_ESTADOS: EstadoMateria[] = ['bloqueada', 'disponible', 'cursando', 'regularizada', 'aprobada'];
@@ -37,9 +39,10 @@ interface RowProps {
   onUpdateGrades: (updates: Pick<MateriaProgreso, 'notaParcial1' | 'notaParcial2' | 'notaFinal'>) => void;
   onSelect: () => void;
   showCuatrimestre: boolean;
+  showAnio: boolean;
 }
 
-function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdateGrades, onSelect, showCuatrimestre }: RowProps) {
+function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdateGrades, onSelect, showCuatrimestre, showAnio }: RowProps) {
   const { theme } = useTheme();
   const EC = getEstadoColors(theme);
   const c = EC[estado];
@@ -70,7 +73,7 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
         <button className="td-nombre-btn" onClick={onSelect}>{materia.nombre}</button>
         {materia.esAnual && <span className="row-badge-anual">Anual</span>}
       </td>
-      <td className="td-center" data-label="Año">{materia.anio}°</td>
+      {showAnio && <td className="td-center" data-label="Año">{materia.anio}°</td>}
       {showCuatrimestre && <td className="td-center td-secondary" data-label="C°">{materia.cuatrimestre}°</td>}
       <td className="td-center td-secondary" data-label="Hs">{materia.horasSemanales}</td>
       <td className="td-tipo td-secondary" data-label="Tipo">{TIPO_LABEL[materia.tipo] ?? materia.tipo}</td>
@@ -118,8 +121,9 @@ export function TablaView({
   onRemoveMateria,
   onUpdateGrades,
   showCuatrimestre = true,
+  showAnio = true,
 }: TablaViewProps) {
-  const colSpan = showCuatrimestre ? 10 : 9;
+  const colSpan = 10 - (showCuatrimestre ? 0 : 1) - (showAnio ? 0 : 1);
   const { theme } = useTheme();
   const EC = getEstadoColors(theme);
   const [query, setQuery] = useState('');
@@ -222,7 +226,7 @@ export function TablaView({
             })}
           </div>
           <div className="filter-group">
-            {years.map(a => (
+            {showAnio && years.map(a => (
               <button
                 key={a}
                 className={`filter-btn${filterAnio === a ? ' active' : ''}`}
@@ -248,7 +252,7 @@ export function TablaView({
             <tr>
               <th>Código</th>
               <th className="th-nombre">Asignatura</th>
-              <th>Año</th>
+              {showAnio && <th>Año</th>}
               {showCuatrimestre && <th>C°</th>}
               <th>Hs</th>
               <th>Tipo</th>
@@ -270,6 +274,7 @@ export function TablaView({
                 onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
                 onSelect={() => onSelectMateria(m.id)}
                 showCuatrimestre={showCuatrimestre}
+                showAnio={showAnio}
               />
             ))}
             {filteredMain.length === 0 && filteredTransversals.length === 0 && (
@@ -295,6 +300,7 @@ export function TablaView({
                     onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
                     onSelect={() => onSelectMateria(m.id)}
                     showCuatrimestre={showCuatrimestre}
+                    showAnio={showAnio}
                   />
                 ))}
               </>

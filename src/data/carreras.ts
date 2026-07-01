@@ -10,6 +10,10 @@ import { anatomiaPatologica } from './anatomiaPatologica';
 import { kinesiologia } from './kinesiologia';
 import { nutricion } from './nutricion';
 import { medicina } from './medicina';
+import { abogacia } from './abogacia';
+import { cienciaPolitica } from './cienciaPolitica';
+import { gestionPublica } from './gestionPublica';
+import { procurador } from './procurador';
 
 export interface CarreraInfo {
   id: string;
@@ -143,8 +147,33 @@ export const CARRERAS: CarreraInfo[] = [
     id: 'abogacia',
     nombre: 'Abogacía',
     departamento: 'Derecho y Ciencias Políticas',
-    plan: '2024',
-    disponible: false,
+    plan: '2018',
+    disponible: true,
+    datos: abogacia,
+  },
+  {
+    id: 'procurador',
+    nombre: 'Procurador',
+    departamento: 'Derecho y Ciencias Políticas',
+    plan: '2010',
+    disponible: true,
+    datos: procurador,
+  },
+  {
+    id: 'lic-ciencia-politica',
+    nombre: 'Licenciatura en Ciencia Política',
+    departamento: 'Derecho y Ciencias Políticas',
+    plan: '2005',
+    disponible: true,
+    datos: cienciaPolitica,
+  },
+  {
+    id: 'tec-gestion-publica',
+    nombre: 'Tecnicatura Universitaria en Gestión Pública',
+    departamento: 'Derecho y Ciencias Políticas',
+    plan: '2010',
+    disponible: true,
+    datos: gestionPublica,
   },
 ];
 
