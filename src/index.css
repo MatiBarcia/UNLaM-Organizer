@@ -671,3 +671,172 @@ input  { font-family: inherit; }
 .footer-stat:first-child { padding-left: 0; }
 .fs-label { font-size: 10px; color: var(--txt-3); font-weight: 500; }
 .fs-val   { font-size: 16px; font-weight: 700; color: var(--txt); }
+
+/* ── Landing Page ──────────────────────────────────────────────────── */
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 64px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--brd);
+  flex-shrink: 0;
+}
+
+.landing-logo {
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.landing-main {
+  flex: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px 64px;
+}
+
+.landing-hero {
+  margin-bottom: 48px;
+}
+
+.landing-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--txt);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.landing-subtitle {
+  font-size: 15px;
+  color: var(--txt-2);
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+.landing-select-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--txt-3);
+  margin-bottom: 24px;
+}
+
+.landing-depto {
+  margin-bottom: 36px;
+}
+
+.landing-depto-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--txt-2);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--brd);
+}
+
+.landing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.landing-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg-1);
+  border: 1px solid var(--brd);
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.landing-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.landing-card:hover .lc-icon { color: var(--accent); }
+
+.landing-card--disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.landing-card--disabled:hover {
+  border-color: var(--brd);
+  background: var(--bg-1);
+  transform: none;
+  box-shadow: none;
+}
+.landing-card--disabled:hover .lc-icon { color: var(--txt-3); }
+
+.lc-icon {
+  color: var(--txt-3);
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.lc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.lc-nombre {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--txt);
+  line-height: 1.3;
+}
+
+.lc-plan {
+  font-size: 11px;
+  color: var(--txt-3);
+}
+
+.lc-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  color: var(--txt-3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.landing-footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--txt-3);
+  border-top: 1px solid var(--brd);
+}
+
+.landing-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.landing-footer a:hover { text-decoration: underline; }

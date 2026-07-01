@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { MateriaProgreso, ProgresoPerfil } from '../types';
 
-const STORAGE_KEY = 'unlam_progreso_v1';
+export function useProgreso(carreraId: string) {
+  const storageKey = `unlam_progreso_v1_${carreraId}`;
 
-export function useProgreso() {
   const [progreso, setProgreso] = useState<ProgresoPerfil>(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(storageKey);
       return raw ? (JSON.parse(raw) as ProgresoPerfil) : {};
     } catch {
       return {};
@@ -14,8 +14,8 @@ export function useProgreso() {
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progreso));
-  }, [progreso]);
+    localStorage.setItem(storageKey, JSON.stringify(progreso));
+  }, [progreso, storageKey]);
 
   const setEstado = useCallback((id: string, estado: MateriaProgreso['estado']) => {
     setProgreso(prev => ({
