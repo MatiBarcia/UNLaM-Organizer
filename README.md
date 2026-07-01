@@ -10,6 +10,8 @@ UNLaM Organizer es una aplicación web que te permite ver el plan de estudios co
 
 ## Carreras disponibles
 
+### Ingeniería e Investigaciones Tecnológicas
+
 | Carrera | Plan |
 |---------|------|
 | Ingeniería en Informática | 2026 |
@@ -18,6 +20,27 @@ UNLaM Organizer es una aplicación web que te permite ver el plan de estudios co
 | Ingeniería Civil | 2025 |
 | Ingeniería Industrial | 2024 |
 | Ingeniería Electrónica | 2023 |
+
+### Salud
+
+| Carrera | Plan |
+|---------|------|
+| Medicina | 2023 |
+| Licenciatura en Enfermería | 2016 |
+| Licenciatura en Kinesiología y Fisiatría | 2011 |
+| Licenciatura en Nutrición | 2011 |
+| Tecnicatura Universitaria en Anatomía Patológica | 2022 |
+
+### Derecho y Ciencias Políticas
+
+| Carrera | Plan |
+|---------|------|
+| Abogacía | 2018 |
+| Procurador | 2010 |
+| Licenciatura en Ciencia Política | 2005 |
+| Tecnicatura Universitaria en Gestión Pública | 2010 |
+
+> Para las carreras de Salud y Derecho, los planes oficiales de la UNLaM no siempre publican el cuatrimestre (y en algunos casos ni el año) de cada materia — solo el año o solo el orden de correlatividades. En esos casos el dato faltante se estima a partir de las correlativas, y la columna correspondiente (Año y/o C°) se oculta en la Vista Tabla para no mostrar como oficial algo que no lo es.
 
 ---
 
@@ -42,7 +65,7 @@ Lista todas las materias en formato tabla con filtros por:
 - **Año** (dinámico según la carrera, de 1° hasta el último año del plan)
 - **Transversales** (Inglés y Computación Transversal, en su propio filtro separado)
 
-Cada fila tiene un indicador de color por año en el borde izquierdo para facilitar la lectura. Desde la tabla podés cambiar el estado de cada materia y registrar las notas de parciales y final.
+Cada fila tiene un indicador de color por año en el borde izquierdo para facilitar la lectura. Desde la tabla podés cambiar el estado de cada materia y registrar las notas de parciales y final. En las carreras donde el año o el cuatrimestre de las materias fue estimado (ver sección de carreras disponibles), esas columnas y su filtro no se muestran.
 
 ### Modo Simulación
 Permite simular un escenario académico marcando materias como aprobadas temporalmente, para visualizar qué otras materias se desbloquearían. Al salir del modo simulación todo vuelve a su estado real.
