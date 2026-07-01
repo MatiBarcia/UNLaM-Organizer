@@ -3,7 +3,7 @@ import type { Carrera } from '../types';
 export const arquitectura: Carrera = {
   id: 'arquitectura',
   nombre: 'Arquitectura',
-  plan: '2026',
+  plan: '2015',
   materias: [
     // ── 1° Año ─ 1° Cuatrimestre ──────────────────────────────────────────
     { id: '2952', codigo: '2952', nombre: 'Proyecto I',            anio: 1, cuatrimestre: 1, horasSemanales: 8, correlativas: [],                                              tipo: 'obligatoria' },

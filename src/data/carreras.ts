@@ -1,6 +1,10 @@
 import type { Carrera } from '../types';
 import { ingenieriaInformatica } from './ingInformatica';
 import { arquitectura } from './arquitectura';
+import { ingenieriaMecanica } from './ingMecanica';
+import { ingenieriaCivil } from './ingCivil';
+import { ingenieriaIndustrial } from './ingIndustrial';
+import { ingenieriaElectronica } from './ingElectronica';
 
 export interface CarreraInfo {
   id: string;
@@ -25,30 +29,41 @@ export const CARRERAS: CarreraInfo[] = [
     id: 'arquitectura',
     nombre: 'Arquitectura',
     departamento: 'Ingeniería e Investigaciones Tecnológicas',
-    plan: '2026',
+    plan: '2015',
     disponible: true,
     datos: arquitectura,
+  },
+  {
+    id: 'ing-mecanica',
+    nombre: 'Ingeniería Mecánica',
+    departamento: 'Ingeniería e Investigaciones Tecnológicas',
+    plan: '2015',
+    disponible: true,
+    datos: ingenieriaMecanica,
+  },
+  {
+    id: 'ing-civil',
+    nombre: 'Ingeniería Civil',
+    departamento: 'Ingeniería e Investigaciones Tecnológicas',
+    plan: '2025',
+    disponible: true,
+    datos: ingenieriaCivil,
   },
   {
     id: 'ing-industrial',
     nombre: 'Ingeniería Industrial',
     departamento: 'Ingeniería e Investigaciones Tecnológicas',
     plan: '2024',
-    disponible: false,
+    disponible: true,
+    datos: ingenieriaIndustrial,
   },
   {
     id: 'ing-electronica',
     nombre: 'Ingeniería Electrónica',
     departamento: 'Ingeniería e Investigaciones Tecnológicas',
-    plan: '2024',
-    disponible: false,
-  },
-  {
-    id: 'ing-civil',
-    nombre: 'Ingeniería Civil',
-    departamento: 'Ingeniería e Investigaciones Tecnológicas',
-    plan: '2024',
-    disponible: false,
+    plan: '2023',
+    disponible: true,
+    datos: ingenieriaElectronica,
   },
 
   // ── Ciencias Económicas ────────────────────────────────────────────────
