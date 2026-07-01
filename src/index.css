@@ -87,11 +87,21 @@ input  { font-family: inherit; }
 .hdr-center { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .hdr-right  { display: flex; align-items: center; gap: 10px; }
 
-.hdr-logo {
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--accent);
-  letter-spacing: 1px;
+.hdr-logo-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: opacity 0.15s;
+}
+.hdr-logo-btn:hover { opacity: 0.8; }
+.hdr-logo-img {
+  height: 36px;
+  width: 36px;
+  object-fit: contain;
 }
 
 .hdr-career-info { display: flex; flex-direction: column; }

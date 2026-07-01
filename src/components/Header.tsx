@@ -1,4 +1,5 @@
 import { Sun, Moon, FlaskConical } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria } from '../types';
 import { computeStats, getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const EC = getEstadoColors(theme);
   const s = computeStats(carrera.materias, estadosEfectivos);
   const pct = s.total > 0 ? Math.round((s.aprobadas / s.total) * 100) : 0;
@@ -21,7 +23,9 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
   return (
     <header className="app-header">
       <div className="hdr-left">
-        <div className="hdr-logo">UNLaM</div>
+        <button className="hdr-logo-btn" onClick={() => navigate('/')} title="Volver al inicio">
+          <img src="/logo.png" alt="UNLaM Organizer" className="hdr-logo-img" />
+        </button>
         <div className="hdr-career-info">
           <span className="hdr-career-name">{carrera.nombre}</span>
           <span className="hdr-career-plan">Plan {carrera.plan}</span>
