@@ -27,7 +27,9 @@ export function MateriaNode({ data, selected }: NodeProps<MateriaNodeType>) {
         outlineOffset: 2,
       }}
     >
-      <Handle type="target" position={Position.Left} style={{ background: c.border, width: 8, height: 8 }} />
+      <Handle type="target" position={Position.Left} style={{ opacity: 0, width: 4, height: 4, minWidth: 0, minHeight: 0, pointerEvents: 'none' }} />
+
+      <div className="mn-accent" style={{ background: c.border }} />
 
       {data.simApproved && <div className="mn-sim-badge">SIM</div>}
 
@@ -38,7 +40,7 @@ export function MateriaNode({ data, selected }: NodeProps<MateriaNodeType>) {
       )}
       <div className="mn-nombre" style={{ color: c.text }}>{data.nombre}</div>
 
-      <Handle type="source" position={Position.Right} style={{ background: c.border, width: 8, height: 8 }} />
+      <Handle type="source" position={Position.Right} style={{ opacity: 0, width: 4, height: 4, minWidth: 0, minHeight: 0, pointerEvents: 'none' }} />
     </div>
   );
 }

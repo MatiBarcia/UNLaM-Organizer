@@ -1,12 +1,15 @@
 import { MarkerType, type Edge, type Node } from '@xyflow/react';
 import type { EstadoMateria, Materia, MateriaNodeData } from '../types';
+import type { ColHeaderData } from '../components/ColumnHeaderNode';
 import { ESTADO_COLORS } from './estados';
 
 const NODE_W = 240;
-const NODE_H = 72;
+const NODE_H = 84;
 const COL_STEP = 300;
-const ROW_H = 90;
+const ROW_H = 104;
 const TRANS_GAP = 70;
+const HEADER_H = 44;
+const HEADER_GAP = 10;
 
 export function buildGraph(
   materias: Materia[],
@@ -36,32 +39,59 @@ export function buildGraph(
   }
   const TRANS_Y = maxMainRows * ROW_H + TRANS_GAP;
 
+  const NODE_Y0 = HEADER_H + HEADER_GAP;
+
+  let maxTransRows = 0;
+  for (const mats of optimizedTrans.values()) {
+    maxTransRows = Math.max(maxTransRows, mats.length);
+  }
+
   const pos = new Map<string, { x: number; y: number }>();
 
   for (const [ci, mats] of optimizedMain) {
     const x = ci * COL_STEP;
-    mats.forEach((m, i) => pos.set(m.id, { x, y: i * ROW_H }));
+    const offsetY = ((maxMainRows - mats.length) / 2) * ROW_H;
+    mats.forEach((m, i) => pos.set(m.id, { x, y: NODE_Y0 + offsetY + i * ROW_H }));
   }
   for (const [ci, mats] of optimizedTrans) {
     const x = ci * COL_STEP;
-    mats.forEach((m, i) => pos.set(m.id, { x, y: TRANS_Y + i * ROW_H }));
+    const offsetY = ((maxTransRows - mats.length) / 2) * ROW_H;
+    mats.forEach((m, i) => pos.set(m.id, { x, y: NODE_Y0 + TRANS_Y + offsetY + i * ROW_H }));
   }
 
-  const nodes: Node<MateriaNodeData>[] = materias
-    .filter(m => m.tipo !== 'electiva_opcion')
-    .map(m => ({
-      id: m.id,
-      type: 'materia',
-      position: pos.get(m.id) ?? { x: 0, y: 0 },
-      data: {
-        codigo: m.codigo,
-        nombre: m.nombre,
-        estado: estadosEfectivos[m.id] ?? 'bloqueada',
-        tipo: m.tipo,
-      },
-      width: NODE_W,
-      height: NODE_H,
-    }));
+  // Column header nodes — one per cuatrimestre found in either section
+  const allCIs = new Set([...optimizedMain.keys(), ...optimizedTrans.keys()]);
+  const headerNodes: Node<ColHeaderData>[] = [...allCIs].sort((a, b) => a - b).map(ci => ({
+    id: `col-header-${ci}`,
+    type: 'col-header',
+    className: 'col-header-wrapper',
+    position: { x: ci * COL_STEP, y: 0 },
+    data: { anio: Math.floor(ci / 2) + 1, cuatrimestre: (ci % 2) + 1 },
+    selectable: false,
+    focusable: false,
+    draggable: false,
+    width: NODE_W,
+    height: HEADER_H,
+  }));
+
+  const nodes: Node[] = [
+    ...headerNodes,
+    ...materias
+      .filter(m => m.tipo !== 'electiva_opcion')
+      .map(m => ({
+        id: m.id,
+        type: 'materia',
+        position: pos.get(m.id) ?? { x: 0, y: 0 },
+        data: {
+          codigo: m.codigo,
+          nombre: m.nombre,
+          estado: estadosEfectivos[m.id] ?? 'bloqueada',
+          tipo: m.tipo,
+        } as MateriaNodeData,
+        width: NODE_W,
+        height: NODE_H,
+      })),
+  ];
 
   const edges: Edge[] = [];
   for (const m of materias) {
@@ -74,13 +104,13 @@ export function buildGraph(
         id: `e-${corrId}-${m.id}`,
         source: corrId,
         target: m.id,
-        type: 'default',
-        style: { stroke: colors.border, strokeWidth: 1.5, opacity: 0.55 },
+        type: 'straight',
+        style: { stroke: colors.border, strokeWidth: 2, opacity: 0.75 },
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: colors.border,
-          width: 12,
-          height: 12,
+          width: 16,
+          height: 16,
         },
       });
     }
