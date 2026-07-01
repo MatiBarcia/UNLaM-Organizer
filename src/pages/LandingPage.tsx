@@ -11,7 +11,7 @@ export function LandingPage() {
   return (
     <div className="landing">
       <header className="landing-header">
-        <div className="landing-logo">UNLaM</div>
+        <img src="/logo.png" alt="UNLaM Organizer" className="landing-logo-img" />
         <button className="icon-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}>
           {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
         </button>
@@ -19,6 +19,7 @@ export function LandingPage() {
 
       <main className="landing-main">
         <div className="landing-hero">
+          <img src="/logo.png" alt="UNLaM Organizer" className="landing-hero-logo" />
           <h1 className="landing-title">Organizador de Materias</h1>
           <p className="landing-subtitle">
             Visualizá tu plan de estudios, seguí tu progreso y planificá el camino a recibirse.
