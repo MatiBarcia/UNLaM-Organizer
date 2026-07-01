@@ -40,8 +40,6 @@ UNLaM Organizer es una aplicación web que te permite ver el plan de estudios co
 | Licenciatura en Ciencia Política | 2005 |
 | Tecnicatura Universitaria en Gestión Pública | 2010 |
 
-> Para las carreras de Salud y Derecho, los planes oficiales de la UNLaM no siempre publican el cuatrimestre (y en algunos casos ni el año) de cada materia — solo el año o solo el orden de correlatividades. En esos casos el dato faltante se estima a partir de las correlativas, y la columna correspondiente (Año y/o C°) se oculta en la Vista Tabla para no mostrar como oficial algo que no lo es.
-
 ---
 
 ## Funcionalidades
@@ -99,12 +97,3 @@ La app es completamente usable desde el celular:
 | [@xyflow/react](https://reactflow.dev/) | Grafo de correlatividades interactivo |
 | [Lucide React](https://lucide.dev/) | Íconos de la interfaz |
 | CSS Custom Properties | Sistema de temas (dark/light) sin frameworks externos |
-
----
-
-## Correr el proyecto localmente
-
-```bash
-npm install
-npm run dev
-```
