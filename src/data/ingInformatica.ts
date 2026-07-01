@@ -3,7 +3,7 @@ import type { Carrera } from '../types';
 export const ingenieriaInformatica: Carrera = {
   id: 'ing-informatica',
   nombre: 'Ingeniería en Informática',
-  plan: '2023',
+  plan: '2026',
   materias: [
     // ── 1° Año ─ 1° Cuatrimestre ──────────────────────────────────────────
     { id: '3621', codigo: '3621', nombre: 'Matemática Discreta',                      anio: 1, cuatrimestre: 1, horasSemanales: 4, correlativas: [],                                              tipo: 'obligatoria' },
@@ -37,7 +37,6 @@ export const ingenieriaInformatica: Carrera = {
     { id: '3642', codigo: '3642', nombre: 'Principios de Diseño de Sistemas',         anio: 2, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3637', '3626'],                                tipo: 'obligatoria' },
     { id: '3643', codigo: '3643', nombre: 'Redes de Computadoras',                    anio: 2, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3638'],                                        tipo: 'obligatoria' },
     { id: '3644', codigo: '3644', nombre: 'Gestión de las Organizaciones',            anio: 2, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3632'],                                        tipo: 'obligatoria' },
-    { id: '3680', codigo: '3680', nombre: 'Taller de Integración',                    anio: 2, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3638','3636','3635','3632','3630','3626','3625','3624','3623','3621'], tipo: 'optativa' },
 
     // ── 3° Año ─ 1° Cuatrimestre ──────────────────────────────────────────
     { id: '3645', codigo: '3645', nombre: 'Álgebra y Geometría Analítica II',         anio: 3, cuatrimestre: 1, horasSemanales: 4, correlativas: ['3627'],                                        tipo: 'obligatoria' },
