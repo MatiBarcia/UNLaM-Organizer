@@ -13,8 +13,8 @@ export function getEstadoEfectivo(materia: Materia, progreso: ProgresoPerfil): E
 }
 
 export const ESTADO_COLORS = {
-  bloqueada:    { border: '#475569', bg: '#151e2d', text: '#64748b', label: 'Bloqueada'    },
-  disponible:   { border: '#3b82f6', bg: '#172554', text: '#93c5fd', label: 'Disponible'   },
+  bloqueada:    { border: '#424242', bg: '#191919', text: '#5e5e5e', label: 'Bloqueada'    },
+  disponible:   { border: '#3b82f6', bg: '#0e1e35', text: '#93c5fd', label: 'Disponible'   },
   cursando:     { border: '#f59e0b', bg: '#3d2706', text: '#fde68a', label: 'Cursando'     },
   regularizada: { border: '#22c55e', bg: '#052e16', text: '#86efac', label: 'Regularizada' },
   aprobada:     { border: '#4ade80', bg: '#14532d', text: '#bbf7d0', label: 'Aprobada'     },
