@@ -699,6 +699,18 @@ input  { font-family: inherit; }
 .footer-stat:first-child { padding-left: 0; }
 .fs-label { font-size: 10px; color: var(--txt-3); font-weight: 500; }
 .fs-val   { font-size: 16px; font-weight: 700; color: var(--txt); }
+.footer-prom { margin-left: auto; border-right: none; border-left: 1px solid var(--brd); }
+
+.tabla-section-sep td {
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--txt-3);
+  background: var(--bg);
+  border-bottom: 1px solid var(--brd);
+}
 
 /* ── Landing Page ──────────────────────────────────────────────────── */
 .landing {

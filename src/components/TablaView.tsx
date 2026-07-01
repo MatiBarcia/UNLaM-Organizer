@@ -119,7 +119,7 @@ export function TablaView({
   const EC = getEstadoColors(theme);
   const [query, setQuery] = useState('');
   const [filterEstado, setFilterEstado] = useState<EstadoMateria | null>(null);
-  const [filterAnio, setFilterAnio] = useState<number | 'transversal' | null>(null);
+  const [filterAnio, setFilterAnio] = useState<number | null>(null);
 
   const years = [...new Set(
     materias.filter(m => m.tipo !== 'transversal' && m.tipo !== 'electiva_opcion').map(m => m.anio)
@@ -129,25 +129,27 @@ export function TablaView({
     setFilterEstado(prev => (prev === e ? null : e));
   }, []);
 
-  const toggleAnio = useCallback((a: number | 'transversal') => {
+  const toggleAnio = useCallback((a: number) => {
     setFilterAnio(prev => (prev === a ? null : a));
   }, []);
 
-  const filtered = materias.filter(m => {
-    if (m.tipo === 'electiva_opcion') return false;
+  const matchesQuery = (m: Materia) => {
+    if (!query) return true;
+    const q = query.toLowerCase();
+    return m.nombre.toLowerCase().includes(q) || m.codigo.includes(q);
+  };
 
-    const isTransversal = m.tipo === 'transversal';
-    if (filterAnio === 'transversal') {
-      if (!isTransversal) return false;
-    } else {
-      if (isTransversal) return false;
-      if (filterAnio !== null && m.anio !== filterAnio) return false;
-    }
+  const filteredMain = materias.filter(m => {
+    if (m.tipo === 'electiva_opcion' || m.tipo === 'transversal') return false;
+    if (filterAnio !== null && m.anio !== filterAnio) return false;
+    if (!matchesQuery(m)) return false;
+    if (filterEstado && estadosEfectivos[m.id] !== filterEstado) return false;
+    return true;
+  });
 
-    if (query) {
-      const q = query.toLowerCase();
-      if (!m.nombre.toLowerCase().includes(q) && !m.codigo.includes(q)) return false;
-    }
+  const filteredTransversals = materias.filter(m => {
+    if (m.tipo !== 'transversal') return false;
+    if (!matchesQuery(m)) return false;
     if (filterEstado && estadosEfectivos[m.id] !== filterEstado) return false;
     return true;
   });
@@ -161,6 +163,13 @@ export function TablaView({
     bloqueadas: trackable.filter(m => estadosEfectivos[m.id] === 'bloqueada').length,
     total: trackable.length,
   };
+
+  const finalGrades = trackable
+    .map(m => progreso[m.id]?.notaFinal)
+    .filter((n): n is number => n !== null && n !== undefined);
+  const promFinal = finalGrades.length > 0
+    ? (finalGrades.reduce((a, b) => a + b, 0) / finalGrades.length)
+    : null;
 
   return (
     <div className="tabla-wrap">
@@ -200,12 +209,6 @@ export function TablaView({
               {a}° Año
             </button>
           ))}
-          <button
-            className={`filter-btn filter-btn--transversal${filterAnio === 'transversal' ? ' active' : ''}`}
-            onClick={() => toggleAnio('transversal')}
-          >
-            Transversales
-          </button>
         </div>
       </div>
 
@@ -227,7 +230,7 @@ export function TablaView({
             </tr>
           </thead>
           <tbody>
-            {filtered.map(m => (
+            {filteredMain.map(m => (
               <MateriaRow
                 key={m.id}
                 materia={m}
@@ -239,10 +242,29 @@ export function TablaView({
                 onSelect={() => onSelectMateria(m.id)}
               />
             ))}
-            {filtered.length === 0 && (
+            {filteredMain.length === 0 && filteredTransversals.length === 0 && (
               <tr>
                 <td colSpan={10} className="td-empty">Sin resultados</td>
               </tr>
+            )}
+            {filteredTransversals.length > 0 && (
+              <>
+                <tr className="tabla-section-sep">
+                  <td colSpan={10}>Transversales</td>
+                </tr>
+                {filteredTransversals.map(m => (
+                  <MateriaRow
+                    key={m.id}
+                    materia={m}
+                    progreso={progreso[m.id]}
+                    estado={estadosEfectivos[m.id] ?? 'bloqueada'}
+                    onSetEstado={estado => onSetEstado(m.id, estado)}
+                    onRemove={() => onRemoveMateria(m.id)}
+                    onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
+                    onSelect={() => onSelectMateria(m.id)}
+                  />
+                ))}
+              </>
             )}
           </tbody>
         </table>
@@ -268,6 +290,10 @@ export function TablaView({
             <span className="fs-val" style={{ color: col.border }}>{val}</span>
           </div>
         ))}
+        <div className="footer-stat footer-prom">
+          <span className="fs-label">Prom. Final</span>
+          <span className="fs-val">{promFinal !== null ? promFinal.toFixed(2) : '—'}</span>
+        </div>
       </div>
     </div>
   );
