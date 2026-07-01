@@ -1,5 +1,5 @@
 import { useState, useCallback, type ChangeEvent } from 'react';
-import { Search } from 'lucide-react';
+import { Search, SlidersHorizontal } from 'lucide-react';
 import type { EstadoMateria, Materia, MateriaProgreso, ProgresoPerfil } from '../types';
 import { getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
@@ -67,11 +67,11 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
         <button className="td-nombre-btn" onClick={onSelect}>{materia.nombre}</button>
         {materia.esAnual && <span className="row-badge-anual">Anual</span>}
       </td>
-      <td className="td-center">{materia.anio}°</td>
-      <td className="td-center">{materia.cuatrimestre}°</td>
-      <td className="td-center">{materia.horasSemanales}</td>
-      <td className="td-tipo">{TIPO_LABEL[materia.tipo] ?? materia.tipo}</td>
-      <td className="td-estado">
+      <td className="td-center" data-label="Año">{materia.anio}°</td>
+      <td className="td-center td-secondary" data-label="C°">{materia.cuatrimestre}°</td>
+      <td className="td-center td-secondary" data-label="Hs">{materia.horasSemanales}</td>
+      <td className="td-tipo td-secondary" data-label="Tipo">{TIPO_LABEL[materia.tipo] ?? materia.tipo}</td>
+      <td className="td-estado" data-label="Estado">
         <select
           className="estado-select"
           value={progreso?.estado ?? ''}
@@ -84,19 +84,19 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
           <option value="aprobada">Aprobada</option>
         </select>
       </td>
-      <td className="td-grade">
+      <td className="td-grade td-secondary" data-label="Parcial 1">
         {hasGrades ? (
           <input type="number" min="0" max="10" step="0.5" className="grade-input"
             value={p1} onChange={e => setP1(e.target.value)} onBlur={saveGrades} placeholder="—" />
         ) : <span className="grade-placeholder">—</span>}
       </td>
-      <td className="td-grade">
+      <td className="td-grade td-secondary" data-label="Parcial 2">
         {hasGrades ? (
           <input type="number" min="0" max="10" step="0.5" className="grade-input"
             value={p2} onChange={e => setP2(e.target.value)} onBlur={saveGrades} placeholder="—" />
         ) : <span className="grade-placeholder">—</span>}
       </td>
-      <td className="td-grade">
+      <td className="td-grade" data-label="Final">
         {hasGrades ? (
           <input type="number" min="0" max="10" step="0.5" className="grade-input"
             value={fin} onChange={e => setFin(e.target.value)} onBlur={saveGrades} placeholder="—" />
@@ -120,6 +120,8 @@ export function TablaView({
   const [query, setQuery] = useState('');
   const [filterEstado, setFilterEstado] = useState<EstadoMateria | null>(null);
   const [filterAnio, setFilterAnio] = useState<number | 'transversal' | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const activeFilterCount = (filterEstado ? 1 : 0) + (filterAnio !== null ? 1 : 0);
 
   const years = [...new Set(
     materias.filter(m => m.tipo !== 'transversal' && m.tipo !== 'electiva_opcion').map(m => m.anio)
@@ -178,46 +180,59 @@ export function TablaView({
     <div className="tabla-wrap">
       {/* Filters */}
       <div className="tabla-filters">
-        <div className="tabla-search">
-          <Search size={15} className="search-icon" />
-          <input
-            className="search-input"
-            placeholder="Buscar materia o código..."
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-          />
-        </div>
-        <div className="filter-group">
-          {ALL_ESTADOS.map(e => {
-            const col = EC[e];
-            return (
-              <button
-                key={e}
-                className={`filter-btn${filterEstado === e ? ' active' : ''}`}
-                style={filterEstado === e ? { background: col.bg, borderColor: col.border, color: col.text } : undefined}
-                onClick={() => toggleEstado(e)}
-              >
-                {col.label}
-              </button>
-            );
-          })}
-        </div>
-        <div className="filter-group">
-          {years.map(a => (
-            <button
-              key={a}
-              className={`filter-btn${filterAnio === a ? ' active' : ''}`}
-              onClick={() => toggleAnio(a)}
-            >
-              {a}° Año
-            </button>
-          ))}
+        <div className="tabla-filters-row">
+          <div className="tabla-search">
+            <Search size={15} className="search-icon" />
+            <input
+              className="search-input"
+              placeholder="Buscar materia o código..."
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+            />
+          </div>
           <button
-            className={`filter-btn${filterAnio === 'transversal' ? ' active' : ''}`}
-            onClick={() => toggleAnio('transversal')}
+            className={`tabla-filter-toggle${filtersOpen ? ' active' : ''}`}
+            onClick={() => setFiltersOpen(o => !o)}
           >
-            Transversales
+            <SlidersHorizontal size={14} />
+            Filtros
+            {activeFilterCount > 0 && <span className="tabla-filter-badge">{activeFilterCount}</span>}
           </button>
+        </div>
+
+        <div className={`tabla-filter-groups${filtersOpen ? ' tabla-filter-groups--open' : ''}`}>
+          <div className="filter-group">
+            {ALL_ESTADOS.map(e => {
+              const col = EC[e];
+              return (
+                <button
+                  key={e}
+                  className={`filter-btn${filterEstado === e ? ' active' : ''}`}
+                  style={filterEstado === e ? { background: col.bg, borderColor: col.border, color: col.text } : undefined}
+                  onClick={() => toggleEstado(e)}
+                >
+                  {col.label}
+                </button>
+              );
+            })}
+          </div>
+          <div className="filter-group">
+            {years.map(a => (
+              <button
+                key={a}
+                className={`filter-btn${filterAnio === a ? ' active' : ''}`}
+                onClick={() => toggleAnio(a)}
+              >
+                {a}° Año
+              </button>
+            ))}
+            <button
+              className={`filter-btn${filterAnio === 'transversal' ? ' active' : ''}`}
+              onClick={() => toggleAnio('transversal')}
+            >
+              Transversales
+            </button>
+          </div>
         </div>
       </div>
 

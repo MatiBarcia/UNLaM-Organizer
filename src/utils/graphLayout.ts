@@ -3,7 +3,7 @@ import type { EstadoMateria, Materia, MateriaNodeData } from '../types';
 import type { ColHeaderData } from '../components/ColumnHeaderNode';
 import { ESTADO_COLORS } from './estados';
 
-const NODE_W = 240;
+export const NODE_W = 240;
 const NODE_H = 84;
 const COL_STEP = 300;
 const ROW_H = 104;

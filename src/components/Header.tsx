@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { Sun, Moon, FlaskConical, Download, Upload } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Sun, Moon, FlaskConical, Download, Upload, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria } from '../types';
 import { computeStats, getEstadoColors } from '../utils/estados';
@@ -20,9 +20,15 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const EC = getEstadoColors(theme);
   const s = computeStats(carrera.materias, estadosEfectivos);
   const pct = s.total > 0 ? Math.round((s.aprobadas / s.total) * 100) : 0;
+
+  function runAndClose(fn: () => void) {
+    fn();
+    setMenuOpen(false);
+  }
 
   return (
     <header className="app-header">
@@ -74,40 +80,49 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
             e.target.value = '';
           }}
         />
-        <button className="io-btn" onClick={onExport} title="Exportar progreso a JSON">
-          <Download size={15} />
-          Exportar
-        </button>
-        <button className="io-btn" onClick={() => fileInputRef.current?.click()} title="Importar progreso desde JSON">
-          <Upload size={15} />
-          Importar
-        </button>
-        <button
-          className={`sim-btn${simMode ? ' sim-btn--active' : ''}`}
-          onClick={onToggleSim}
-          title={simMode ? 'Salir del modo simulación' : 'Simular avance académico'}
-        >
-          <FlaskConical size={15} />
-          {simMode ? 'Salir simulación' : 'Simular'}
-        </button>
 
         <div className="view-toggle">
           <button
             className={`view-btn${view === 'mapa' ? ' active' : ''}`}
-            onClick={() => onViewChange('mapa')}
+            onClick={() => runAndClose(() => onViewChange('mapa'))}
           >
             Mapa
           </button>
           <button
             className={`view-btn${view === 'tabla' ? ' active' : ''}`}
-            onClick={() => onViewChange('tabla')}
+            onClick={() => runAndClose(() => onViewChange('tabla'))}
           >
             Tabla
           </button>
         </div>
 
-        <button className="icon-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}>
-          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+        {menuOpen && <div className="hdr-menu-backdrop" onClick={() => setMenuOpen(false)} />}
+
+        <div className={`hdr-actions${menuOpen ? ' hdr-actions--open' : ''}`}>
+          <button className="io-btn" onClick={() => runAndClose(onExport)} title="Exportar progreso a JSON">
+            <Download size={15} />
+            Exportar
+          </button>
+          <button className="io-btn" onClick={() => runAndClose(() => fileInputRef.current?.click())} title="Importar progreso desde JSON">
+            <Upload size={15} />
+            Importar
+          </button>
+          <button
+            className={`sim-btn${simMode ? ' sim-btn--active' : ''}`}
+            onClick={() => runAndClose(onToggleSim)}
+            title={simMode ? 'Salir del modo simulación' : 'Simular avance académico'}
+          >
+            <FlaskConical size={15} />
+            {simMode ? 'Salir simulación' : 'Simular'}
+          </button>
+          <button className="icon-btn" onClick={() => runAndClose(toggleTheme)} title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}>
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            <span className="icon-btn-label">{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
+          </button>
+        </div>
+
+        <button className="hdr-hamburger-btn" onClick={() => setMenuOpen(o => !o)} title="Más opciones">
+          <Menu size={18} />
         </button>
       </div>
     </header>

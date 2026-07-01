@@ -1,4 +1,5 @@
-import { useMemo, useCallback, useEffect, type MouseEvent } from 'react';
+import { useMemo, useCallback, useEffect, useState, type MouseEvent } from 'react';
+import { Info } from 'lucide-react';
 import { IconGitHub, IconInstagram, IconLinkedIn, IconX } from './SocialIcons';
 import {
   ReactFlow,
@@ -9,6 +10,7 @@ import {
   useNodesState,
   useEdgesState,
   type Node,
+  type ReactFlowInstance,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import type { EstadoMateria, Materia, ProgresoPerfil } from '../types';
@@ -33,11 +35,38 @@ export function MapaView({ materias, estadosEfectivos, onSelectMateria, simMode,
   const { theme } = useTheme();
   const dark = theme === 'dark';
   const EC = getEstadoColors(theme);
+  const [legendOpen, setLegendOpen] = useState(false);
+  const [isMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
 
   const { nodes: computed, edges: computedEdges } = useMemo(
     () => buildGraph(materias, estadosEfectivos),
     [materias, estadosEfectivos],
   );
+
+  // Bounds of the first year (its two columns), independent of estado (so it doesn't recompute on every progress change)
+  const firstYearBounds = useMemo(() => {
+    const { nodes: layoutNodes } = buildGraph(materias, {});
+    const xs = [...new Set(layoutNodes.map(n => n.position.x))].sort((a, b) => a - b);
+    const firstTwo = new Set(xs.slice(0, 2));
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let maxBottom = 0;
+    for (const n of layoutNodes) {
+      if (!firstTwo.has(n.position.x)) continue;
+      const w = (n.width as number) ?? 0;
+      const h = (n.height as number) ?? 0;
+      minX = Math.min(minX, n.position.x);
+      maxX = Math.max(maxX, n.position.x + w);
+      maxBottom = Math.max(maxBottom, n.position.y + h);
+    }
+    return isFinite(minX) ? { x: minX, y: 0, width: maxX - minX, height: maxBottom } : null;
+  }, [materias]);
+
+  const handleInit = useCallback((instance: ReactFlowInstance) => {
+    if (isMobile && firstYearBounds) {
+      instance.fitBounds(firstYearBounds, { padding: 0.02 });
+    }
+  }, [isMobile, firstYearBounds]);
 
   const computedWithSim = useMemo(
     () => computed.map(node => {
@@ -84,10 +113,12 @@ export function MapaView({ materias, estadosEfectivos, onSelectMateria, simMode,
         onPaneClick={handlePaneClick}
         nodesDraggable={false}
         nodesConnectable={false}
-        fitView
+        fitView={!isMobile}
         fitViewOptions={{ padding: 0.12 }}
+        onInit={handleInit}
         minZoom={0.08}
         maxZoom={2}
+        proOptions={{ hideAttribution: true }}
       >
         <Background
           variant={BackgroundVariant.Dots}
@@ -117,7 +148,14 @@ export function MapaView({ materias, estadosEfectivos, onSelectMateria, simMode,
       )}
 
       <div className="mapa-bottom-bar">
-        <div className="mapa-legend">
+        <button
+          className="legend-toggle-btn"
+          onClick={() => setLegendOpen(o => !o)}
+          title={legendOpen ? 'Ocultar leyenda' : 'Mostrar leyenda'}
+        >
+          <Info size={16} />
+        </button>
+        <div className={`mapa-legend${legendOpen ? ' mapa-legend--open' : ''}`}>
           {(Object.entries(EC) as [EstadoMateria, typeof EC[EstadoMateria]][]).map(
             ([estado, c]) => (
               <div key={estado} className="legend-item">

@@ -133,17 +133,20 @@ export function AppInner({ carrera }: AppInnerProps) {
         </div>
 
         {selectedMateria && !simMode && (
-          <MateriaPanel
-            materia={selectedMateria}
-            progreso={progreso[selectedMateria.id]}
-            estadoEfectivo={estadosEfectivos[selectedMateria.id] ?? 'bloqueada'}
-            todasMaterias={carrera.materias}
-            estadosEfectivos={estadosEfectivos}
-            onClose={() => setSelectedId(null)}
-            onSetEstado={(estado: MateriaProgreso['estado']) => setEstado(selectedMateria.id, estado)}
-            onRemove={() => { removeMateria(selectedMateria.id); }}
-            onUpdateGrades={updates => updateGrades(selectedMateria.id, updates)}
-          />
+          <>
+            <div className="panel-backdrop" onClick={() => setSelectedId(null)} />
+            <MateriaPanel
+              materia={selectedMateria}
+              progreso={progreso[selectedMateria.id]}
+              estadoEfectivo={estadosEfectivos[selectedMateria.id] ?? 'bloqueada'}
+              todasMaterias={carrera.materias}
+              estadosEfectivos={estadosEfectivos}
+              onClose={() => setSelectedId(null)}
+              onSetEstado={(estado: MateriaProgreso['estado']) => setEstado(selectedMateria.id, estado)}
+              onRemove={() => { removeMateria(selectedMateria.id); }}
+              onUpdateGrades={updates => updateGrades(selectedMateria.id, updates)}
+            />
+          </>
         )}
       </div>
     </div>
