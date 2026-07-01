@@ -128,6 +128,7 @@ export function AppInner({ carrera }: AppInnerProps) {
               onSetEstado={setEstado}
               onRemoveMateria={removeMateria}
               onUpdateGrades={updateGrades}
+              showCuatrimestre={!carrera.cuatrimestreEstimado}
             />
           )}
         </div>

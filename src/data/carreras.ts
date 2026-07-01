@@ -5,6 +5,11 @@ import { ingenieriaMecanica } from './ingMecanica';
 import { ingenieriaCivil } from './ingCivil';
 import { ingenieriaIndustrial } from './ingIndustrial';
 import { ingenieriaElectronica } from './ingElectronica';
+import { enfermeria } from './enfermeria';
+import { anatomiaPatologica } from './anatomiaPatologica';
+import { kinesiologia } from './kinesiologia';
+import { nutricion } from './nutricion';
+import { medicina } from './medicina';
 
 export interface CarreraInfo {
   id: string;
@@ -64,6 +69,48 @@ export const CARRERAS: CarreraInfo[] = [
     plan: '2023',
     disponible: true,
     datos: ingenieriaElectronica,
+  },
+
+  // ── Salud ────────────────────────────────────────────────────────────
+  {
+    id: 'medicina',
+    nombre: 'Medicina',
+    departamento: 'Salud',
+    plan: '2023',
+    disponible: true,
+    datos: medicina,
+  },
+  {
+    id: 'lic-enfermeria',
+    nombre: 'Licenciatura en Enfermería',
+    departamento: 'Salud',
+    plan: '2016',
+    disponible: true,
+    datos: enfermeria,
+  },
+  {
+    id: 'lic-kinesiologia',
+    nombre: 'Licenciatura en Kinesiología y Fisiatría',
+    departamento: 'Salud',
+    plan: '2011',
+    disponible: true,
+    datos: kinesiologia,
+  },
+  {
+    id: 'lic-nutricion',
+    nombre: 'Licenciatura en Nutrición',
+    departamento: 'Salud',
+    plan: '2011',
+    disponible: true,
+    datos: nutricion,
+  },
+  {
+    id: 'tec-anatomia-patologica',
+    nombre: 'Tecnicatura Universitaria en Anatomía Patológica',
+    departamento: 'Salud',
+    plan: '2022',
+    disponible: true,
+    datos: anatomiaPatologica,
   },
 
   // ── Ciencias Económicas ────────────────────────────────────────────────

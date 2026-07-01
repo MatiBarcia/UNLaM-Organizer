@@ -36,6 +36,8 @@ export interface Carrera {
   nombre: string;
   plan: string;
   materias: Materia[];
+  /** true si el cuatrimestre de cada materia fue inferido (el plan oficial solo publica el año) */
+  cuatrimestreEstimado?: boolean;
 }
 
 export type ProgresoPerfil = Record<string, MateriaProgreso>;

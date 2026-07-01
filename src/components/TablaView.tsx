@@ -15,6 +15,8 @@ interface TablaViewProps {
     id: string,
     updates: Pick<MateriaProgreso, 'notaParcial1' | 'notaParcial2' | 'notaFinal'>,
   ) => void;
+  /** false cuando el cuatrimestre de la carrera fue estimado (el plan oficial solo publica el año) */
+  showCuatrimestre?: boolean;
 }
 
 const ALL_ESTADOS: EstadoMateria[] = ['bloqueada', 'disponible', 'cursando', 'regularizada', 'aprobada'];
@@ -34,9 +36,10 @@ interface RowProps {
   onRemove: () => void;
   onUpdateGrades: (updates: Pick<MateriaProgreso, 'notaParcial1' | 'notaParcial2' | 'notaFinal'>) => void;
   onSelect: () => void;
+  showCuatrimestre: boolean;
 }
 
-function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdateGrades, onSelect }: RowProps) {
+function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdateGrades, onSelect, showCuatrimestre }: RowProps) {
   const { theme } = useTheme();
   const EC = getEstadoColors(theme);
   const c = EC[estado];
@@ -68,7 +71,7 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
         {materia.esAnual && <span className="row-badge-anual">Anual</span>}
       </td>
       <td className="td-center" data-label="Año">{materia.anio}°</td>
-      <td className="td-center td-secondary" data-label="C°">{materia.cuatrimestre}°</td>
+      {showCuatrimestre && <td className="td-center td-secondary" data-label="C°">{materia.cuatrimestre}°</td>}
       <td className="td-center td-secondary" data-label="Hs">{materia.horasSemanales}</td>
       <td className="td-tipo td-secondary" data-label="Tipo">{TIPO_LABEL[materia.tipo] ?? materia.tipo}</td>
       <td className="td-estado" data-label="Estado">
@@ -114,7 +117,9 @@ export function TablaView({
   onSetEstado,
   onRemoveMateria,
   onUpdateGrades,
+  showCuatrimestre = true,
 }: TablaViewProps) {
+  const colSpan = showCuatrimestre ? 10 : 9;
   const { theme } = useTheme();
   const EC = getEstadoColors(theme);
   const [query, setQuery] = useState('');
@@ -244,7 +249,7 @@ export function TablaView({
               <th>Código</th>
               <th className="th-nombre">Asignatura</th>
               <th>Año</th>
-              <th>C°</th>
+              {showCuatrimestre && <th>C°</th>}
               <th>Hs</th>
               <th>Tipo</th>
               <th>Estado</th>
@@ -264,18 +269,19 @@ export function TablaView({
                 onRemove={() => onRemoveMateria(m.id)}
                 onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
                 onSelect={() => onSelectMateria(m.id)}
+                showCuatrimestre={showCuatrimestre}
               />
             ))}
             {filteredMain.length === 0 && filteredTransversals.length === 0 && (
               <tr>
-                <td colSpan={10} className="td-empty">Sin resultados</td>
+                <td colSpan={colSpan} className="td-empty">Sin resultados</td>
               </tr>
             )}
             {filteredTransversals.length > 0 && (
               <>
                 {filteredMain.length > 0 && (
                   <tr className="tabla-section-sep">
-                    <td colSpan={10}>Transversales</td>
+                    <td colSpan={colSpan}>Transversales</td>
                   </tr>
                 )}
                 {filteredTransversals.map(m => (
@@ -288,6 +294,7 @@ export function TablaView({
                     onRemove={() => onRemoveMateria(m.id)}
                     onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
                     onSelect={() => onSelectMateria(m.id)}
+                    showCuatrimestre={showCuatrimestre}
                   />
                 ))}
               </>
