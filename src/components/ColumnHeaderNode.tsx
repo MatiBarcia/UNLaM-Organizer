@@ -1,6 +1,6 @@
 import type { NodeProps, Node } from '@xyflow/react';
 
-export interface ColHeaderData {
+export interface ColHeaderData extends Record<string, unknown> {
   anio: number;
   cuatrimestre: number;
 }
