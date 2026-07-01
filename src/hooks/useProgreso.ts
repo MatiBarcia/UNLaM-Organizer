@@ -18,16 +18,18 @@ export function useProgreso(carreraId: string) {
   }, [progreso, storageKey]);
 
   const setEstado = useCallback((id: string, estado: MateriaProgreso['estado']) => {
-    setProgreso(prev => ({
-      ...prev,
-      [id]: {
-        notaParcial1: null,
-        notaParcial2: null,
-        notaFinal: null,
-        ...prev[id],
-        estado,
-      },
-    }));
+    setProgreso(prev => {
+      const existing = prev[id];
+      return {
+        ...prev,
+        [id]: {
+          notaParcial1: existing?.notaParcial1 ?? null,
+          notaParcial2: existing?.notaParcial2 ?? null,
+          notaFinal:    existing?.notaFinal ?? null,
+          estado,
+        },
+      };
+    });
   }, []);
 
   const updateGrades = useCallback(

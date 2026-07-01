@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { X, Lock, CheckCircle2, BookOpen, GraduationCap } from 'lucide-react';
-import type { EstadoMateria, Materia, MateriaProgreso, ProgresoPerfil } from '../types';
+import type { EstadoMateria, Materia, MateriaProgreso } from '../types';
 import { getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
 
