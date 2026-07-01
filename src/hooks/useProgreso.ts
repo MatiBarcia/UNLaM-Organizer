@@ -50,5 +50,9 @@ export function useProgreso(carreraId: string) {
     });
   }, []);
 
-  return { progreso, setEstado, updateGrades, removeMateria };
+  const importProgreso = useCallback((data: ProgresoPerfil) => {
+    setProgreso(data);
+  }, []);
+
+  return { progreso, setEstado, updateGrades, removeMateria, importProgreso };
 }

@@ -1,4 +1,5 @@
-import { Sun, Moon, FlaskConical } from 'lucide-react';
+import { useRef } from 'react';
+import { Sun, Moon, FlaskConical, Download, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria } from '../types';
 import { computeStats, getEstadoColors } from '../utils/estados';
@@ -11,11 +12,14 @@ interface HeaderProps {
   onViewChange: (v: 'mapa' | 'tabla') => void;
   simMode: boolean;
   onToggleSim: () => void;
+  onExport: () => void;
+  onImportFile: (file: File) => void;
 }
 
-export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim }: HeaderProps) {
+export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, onExport, onImportFile }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const EC = getEstadoColors(theme);
   const s = computeStats(carrera.materias, estadosEfectivos);
   const pct = s.total > 0 ? Math.round((s.aprobadas / s.total) * 100) : 0;
@@ -59,6 +63,25 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
       </div>
 
       <div className="hdr-right">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          style={{ display: 'none' }}
+          onChange={e => {
+            const f = e.target.files?.[0];
+            if (f) onImportFile(f);
+            e.target.value = '';
+          }}
+        />
+        <button className="io-btn" onClick={onExport} title="Exportar progreso a JSON">
+          <Download size={15} />
+          Exportar
+        </button>
+        <button className="io-btn" onClick={() => fileInputRef.current?.click()} title="Importar progreso desde JSON">
+          <Upload size={15} />
+          Importar
+        </button>
         <button
           className={`sim-btn${simMode ? ' sim-btn--active' : ''}`}
           onClick={onToggleSim}

@@ -6,6 +6,7 @@ import { TablaView } from './TablaView';
 import { MateriaPanel } from './MateriaPanel';
 import { useProgreso } from '../hooks/useProgreso';
 import { getEstadoEfectivo } from '../utils/estados';
+import { validateImport } from '../utils/validateImport';
 
 interface AppInnerProps {
   carrera: Carrera;
@@ -17,7 +18,7 @@ export function AppInner({ carrera }: AppInnerProps) {
   const [simMode, setSimMode] = useState(false);
   const [simOverrides, setSimOverrides] = useState<ProgresoPerfil>({});
 
-  const { progreso, setEstado, updateGrades, removeMateria } = useProgreso(carrera.id);
+  const { progreso, setEstado, updateGrades, removeMateria, importProgreso } = useProgreso(carrera.id);
 
   const activeProgreso = useMemo<ProgresoPerfil>(
     () => (simMode ? { ...progreso, ...simOverrides } : progreso),
@@ -35,6 +36,43 @@ export function AppInner({ carrera }: AppInnerProps) {
   const selectedMateria = selectedId
     ? (carrera.materias.find(m => m.id === selectedId) ?? null)
     : null;
+
+  function handleExport() {
+    const data = {
+      version: '1',
+      carreraId: carrera.id,
+      carreraNombre: carrera.nombre,
+      plan: carrera.plan,
+      exportedAt: new Date().toISOString(),
+      progreso,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `unlam-progreso-${carrera.id}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleImportFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const raw = JSON.parse(e.target!.result as string) as unknown;
+        const result = validateImport(raw, carrera.id);
+        if (!result.ok) {
+          alert(`Error al importar: ${result.error}`);
+          return;
+        }
+        if (!window.confirm('¿Importar este progreso? Esto reemplazará tu progreso actual en esta carrera.')) return;
+        importProgreso(result.progreso);
+      } catch {
+        alert('El archivo no es un JSON válido.');
+      }
+    };
+    reader.readAsText(file);
+  }
 
   function handleToggleSim() {
     setSimMode(prev => {
@@ -66,6 +104,8 @@ export function AppInner({ carrera }: AppInnerProps) {
         onViewChange={setView}
         simMode={simMode}
         onToggleSim={handleToggleSim}
+        onExport={handleExport}
+        onImportFile={handleImportFile}
       />
 
       <div className="app-body">
