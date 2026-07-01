@@ -53,6 +53,17 @@ El encabezado muestra cuántas materias aprobaste sobre el total de la carrera (
 ### Tema claro / oscuro
 Soporte completo de tema oscuro (por defecto) y claro, con colores optimizados para cada uno.
 
+### Exportar / Importar progreso
+Permite descargar el progreso de una carrera como archivo `.json` y volver a importarlo (por ejemplo, para pasar los datos entre dispositivos manualmente).
+
+### Versión mobile
+La app es completamente usable desde el celular:
+
+- **Header compacto**: en pantallas chicas, las acciones (Exportar, Importar, Simular, tema) se agrupan detrás de un botón de menú (☰); el toggle Mapa/Tabla y la barra de progreso quedan siempre visibles.
+- **Vista Mapa**: al entrar se hace zoom automático sobre las dos columnas del primer año (en vez de mostrar todo el plan diminuto), y se puede seguir explorando con pan/pinch-zoom táctil. La referencia de colores queda oculta por defecto y se muestra tocando el ícono ⓘ.
+- **Vista Tabla**: las materias se muestran como tarjetas compactas (código · nombre · estado) en vez de una tabla ancha. Los filtros de estado y año quedan colapsados detrás de un botón "Filtros" con contador de filtros activos, para no ocupar espacio de forma permanente. Al girar el celular a horizontal (o en PC) se ve la tabla completa con todas las columnas.
+- **Panel de detalle**: al tocar una materia se abre como una hoja deslizable desde abajo (bottom sheet) con fondo oscurecido, en vez de tapar toda la pantalla.
+
 ---
 
 ## Tecnologías
