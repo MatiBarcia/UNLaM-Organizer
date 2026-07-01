@@ -61,7 +61,7 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
   }
 
   return (
-    <tr className={`tabla-row estado-${estado}`}>
+    <tr className={`tabla-row estado-${estado} anio-${materia.anio}`}>
       <td className="td-code" style={{ color: c.text }}>{materia.codigo}</td>
       <td className="td-nombre">
         <button className="td-nombre-btn" onClick={onSelect}>{materia.nombre}</button>
@@ -119,24 +119,32 @@ export function TablaView({
   const EC = getEstadoColors(theme);
   const [query, setQuery] = useState('');
   const [filterEstado, setFilterEstado] = useState<EstadoMateria | null>(null);
-  const [filterAnio, setFilterAnio] = useState<number | null>(null);
+  const [filterAnio, setFilterAnio] = useState<number | 'transversal' | null>(null);
 
   const toggleEstado = useCallback((e: EstadoMateria) => {
     setFilterEstado(prev => (prev === e ? null : e));
   }, []);
 
-  const toggleAnio = useCallback((a: number) => {
+  const toggleAnio = useCallback((a: number | 'transversal') => {
     setFilterAnio(prev => (prev === a ? null : a));
   }, []);
 
   const filtered = materias.filter(m => {
     if (m.tipo === 'electiva_opcion') return false;
+
+    const isTransversal = m.tipo === 'transversal';
+    if (filterAnio === 'transversal') {
+      if (!isTransversal) return false;
+    } else {
+      if (isTransversal) return false;
+      if (filterAnio !== null && m.anio !== filterAnio) return false;
+    }
+
     if (query) {
       const q = query.toLowerCase();
       if (!m.nombre.toLowerCase().includes(q) && !m.codigo.includes(q)) return false;
     }
     if (filterEstado && estadosEfectivos[m.id] !== filterEstado) return false;
-    if (filterAnio !== null && m.anio !== filterAnio) return false;
     return true;
   });
 
@@ -188,6 +196,12 @@ export function TablaView({
               {a}° Año
             </button>
           ))}
+          <button
+            className={`filter-btn filter-btn--transversal${filterAnio === 'transversal' ? ' active' : ''}`}
+            onClick={() => toggleAnio('transversal')}
+          >
+            Transversales
+          </button>
         </div>
       </div>
 
