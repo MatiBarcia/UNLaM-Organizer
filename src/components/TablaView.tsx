@@ -121,6 +121,10 @@ export function TablaView({
   const [filterEstado, setFilterEstado] = useState<EstadoMateria | null>(null);
   const [filterAnio, setFilterAnio] = useState<number | 'transversal' | null>(null);
 
+  const years = [...new Set(
+    materias.filter(m => m.tipo !== 'transversal' && m.tipo !== 'electiva_opcion').map(m => m.anio)
+  )].sort((a, b) => a - b);
+
   const toggleEstado = useCallback((e: EstadoMateria) => {
     setFilterEstado(prev => (prev === e ? null : e));
   }, []);
@@ -187,7 +191,7 @@ export function TablaView({
           })}
         </div>
         <div className="filter-group">
-          {[1, 2, 3, 4, 5].map(a => (
+          {years.map(a => (
             <button
               key={a}
               className={`filter-btn${filterAnio === a ? ' active' : ''}`}

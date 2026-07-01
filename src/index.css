@@ -589,6 +589,7 @@ input  { font-family: inherit; }
 .tabla-row.anio-3 .td-code { border-left: 3px solid #22c55e; }
 .tabla-row.anio-4 .td-code { border-left: 3px solid #a855f7; }
 .tabla-row.anio-5 .td-code { border-left: 3px solid #ec4899; }
+.tabla-row.anio-6 .td-code { border-left: 3px solid #14b8a6; }
 
 .tabla td { padding: 6px 10px; vertical-align: middle; }
 .td-code   { font-weight: 700; font-size: 11px; white-space: nowrap; width: 60px; }

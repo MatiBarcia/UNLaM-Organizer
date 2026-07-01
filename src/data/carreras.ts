@@ -1,5 +1,6 @@
 import type { Carrera } from '../types';
 import { ingenieriaInformatica } from './ingInformatica';
+import { arquitectura } from './arquitectura';
 
 export interface CarreraInfo {
   id: string;
@@ -19,6 +20,14 @@ export const CARRERAS: CarreraInfo[] = [
     plan: '2026',
     disponible: true,
     datos: ingenieriaInformatica,
+  },
+  {
+    id: 'arquitectura',
+    nombre: 'Arquitectura',
+    departamento: 'Ingeniería e Investigaciones Tecnológicas',
+    plan: '2026',
+    disponible: true,
+    datos: arquitectura,
   },
   {
     id: 'ing-industrial',
