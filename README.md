@@ -31,6 +31,15 @@ UNLaM Organizer es una aplicación web que te permite ver el plan de estudios co
 | Licenciatura en Nutrición | 2011 |
 | Tecnicatura Universitaria en Anatomía Patológica | 2022 |
 
+### Ciencias Económicas
+
+| Carrera | Plan |
+|---------|------|
+| Contador Público | 2018 |
+| Licenciatura en Administración | 2018 |
+| Licenciatura en Economía | 2023 |
+| Licenciatura en Comercio Internacional | 2018 |
+
 ### Derecho y Ciencias Políticas
 
 | Carrera | Plan |

@@ -20,6 +20,10 @@ import { educacionFisica } from './educacionFisica';
 import { relacionesLaborales } from './relacionesLaborales';
 import { trabajoSocial } from './trabajoSocial';
 import { comunicacionSocial } from './comunicacionSocial';
+import { administracion } from './administracion';
+import { contadorPublico } from './contadorPublico';
+import { economia } from './economia';
+import { comercioInternacional } from './comercioInternacional';
 
 export interface CarreraInfo {
   id: string;
@@ -128,15 +132,33 @@ export const CARRERAS: CarreraInfo[] = [
     id: 'contador-publico',
     nombre: 'Contador Público',
     departamento: 'Ciencias Económicas',
-    plan: '2024',
-    disponible: false,
+    plan: '2018',
+    disponible: true,
+    datos: contadorPublico,
   },
   {
     id: 'lic-administracion',
     nombre: 'Licenciatura en Administración',
     departamento: 'Ciencias Económicas',
-    plan: '2024',
-    disponible: false,
+    plan: '2018',
+    disponible: true,
+    datos: administracion,
+  },
+  {
+    id: 'lic-economia',
+    nombre: 'Licenciatura en Economía',
+    departamento: 'Ciencias Económicas',
+    plan: '2023',
+    disponible: true,
+    datos: economia,
+  },
+  {
+    id: 'lic-comercio-internacional',
+    nombre: 'Licenciatura en Comercio Internacional',
+    departamento: 'Ciencias Económicas',
+    plan: '2018',
+    disponible: true,
+    datos: comercioInternacional,
   },
 
   // ── Humanidades y Ciencias Sociales ───────────────────────────────────
