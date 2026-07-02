@@ -14,6 +14,12 @@ import { abogacia } from './abogacia';
 import { cienciaPolitica } from './cienciaPolitica';
 import { gestionPublica } from './gestionPublica';
 import { procurador } from './procurador';
+import { ceremonialProtocolo } from './ceremonialProtocolo';
+import { relacionesPublicas } from './relacionesPublicas';
+import { educacionFisica } from './educacionFisica';
+import { relacionesLaborales } from './relacionesLaborales';
+import { trabajoSocial } from './trabajoSocial';
+import { comunicacionSocial } from './comunicacionSocial';
 
 export interface CarreraInfo {
   id: string;
@@ -138,8 +144,49 @@ export const CARRERAS: CarreraInfo[] = [
     id: 'lic-comunicacion',
     nombre: 'Licenciatura en Comunicación Social',
     departamento: 'Humanidades y Ciencias Sociales',
-    plan: '2024',
-    disponible: false,
+    plan: '2009',
+    disponible: true,
+    datos: comunicacionSocial,
+  },
+  {
+    id: 'lic-relaciones-publicas',
+    nombre: 'Licenciatura en Relaciones Públicas',
+    departamento: 'Humanidades y Ciencias Sociales',
+    plan: '2009',
+    disponible: true,
+    datos: relacionesPublicas,
+  },
+  {
+    id: 'lic-relaciones-laborales',
+    nombre: 'Licenciatura en Relaciones Laborales',
+    departamento: 'Humanidades y Ciencias Sociales',
+    plan: '2008',
+    disponible: true,
+    datos: relacionesLaborales,
+  },
+  {
+    id: 'lic-trabajo-social',
+    nombre: 'Licenciatura en Trabajo Social',
+    departamento: 'Humanidades y Ciencias Sociales',
+    plan: '2009',
+    disponible: true,
+    datos: trabajoSocial,
+  },
+  {
+    id: 'prof-lic-educacion-fisica',
+    nombre: 'Profesorado y Licenciatura en Educación Física',
+    departamento: 'Humanidades y Ciencias Sociales',
+    plan: '2000',
+    disponible: true,
+    datos: educacionFisica,
+  },
+  {
+    id: 'tec-ceremonial-protocolo',
+    nombre: 'Técnico Universitario en Ceremonial y Protocolo',
+    departamento: 'Humanidades y Ciencias Sociales',
+    plan: '2007',
+    disponible: true,
+    datos: ceremonialProtocolo,
   },
 
   // ── Derecho y Ciencias Políticas ──────────────────────────────────────

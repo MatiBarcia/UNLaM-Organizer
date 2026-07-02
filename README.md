@@ -40,6 +40,17 @@ UNLaM Organizer es una aplicación web que te permite ver el plan de estudios co
 | Licenciatura en Ciencia Política | 2005 |
 | Tecnicatura Universitaria en Gestión Pública | 2010 |
 
+### Humanidades y Ciencias Sociales
+
+| Carrera | Plan |
+|---------|------|
+| Licenciatura en Comunicación Social | 2009 |
+| Licenciatura en Relaciones Públicas | 2009 |
+| Licenciatura en Relaciones Laborales | 2008 |
+| Licenciatura en Trabajo Social | 2009 |
+| Profesorado y Licenciatura en Educación Física | 2000 |
+| Técnico Universitario en Ceremonial y Protocolo | 2007 |
+
 ---
 
 ## Funcionalidades
