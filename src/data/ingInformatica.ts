@@ -1,10 +1,6 @@
-import type { Carrera } from '../types';
+import type { Carrera, Materia } from '../types';
 
-export const ingenieriaInformatica: Carrera = {
-  id: 'ing-informatica',
-  nombre: 'Ingeniería en Informática',
-  plan: '2026',
-  materias: [
+const materias: Materia[] = [
     // ── 1° Año ─ 1° Cuatrimestre ──────────────────────────────────────────
     { id: '3621', codigo: '3621', nombre: 'Matemática Discreta',                      anio: 1, cuatrimestre: 1, horasSemanales: 4, correlativas: [],                                              tipo: 'obligatoria' },
     { id: '3622', codigo: '3622', nombre: 'Análisis Matemático I',                    anio: 1, cuatrimestre: 1, horasSemanales: 4, correlativas: [],                                              tipo: 'obligatoria' },
@@ -94,5 +90,24 @@ export const ingenieriaInformatica: Carrera = {
     { id: '904',  codigo: '904',  nombre: 'Inglés Transversal Nivel IV',              anio: 2, cuatrimestre: 2, horasSemanales: 4, correlativas: ['903'],                                         tipo: 'transversal' },
     { id: '911',  codigo: '911',  nombre: 'Computación Transversal Nivel I',          anio: 1, cuatrimestre: 1, horasSemanales: 4, correlativas: [],                                              tipo: 'transversal' },
     { id: '912',  codigo: '912',  nombre: 'Computación Transversal Nivel II',         anio: 1, cuatrimestre: 2, horasSemanales: 4, correlativas: ['911'],                                         tipo: 'transversal' },
-  ],
+];
+
+// Título intermedio: Técnico Universitario en Desarrollo de Software.
+// Requiere aprobar todas las materias de 1° a 3° año + Inglés Transversal Niveles I y II.
+const INGLES_TRANSVERSAL_I_II = ['901', '902'];
+const materiasTituloIntermedio = [
+  ...materias.filter(m => m.tipo === 'obligatoria' && m.anio <= 3).map(m => m.id),
+  ...INGLES_TRANSVERSAL_I_II,
+];
+
+export const ingenieriaInformatica: Carrera = {
+  id: 'ing-informatica',
+  nombre: 'Ingeniería en Informática',
+  plan: '2026',
+  materias,
+  tituloIntermedio: {
+    nombre: 'Técnico Universitario en Desarrollo de Software',
+    descripcion: 'Se obtiene aprobando todas las materias de 1° a 3° año y los Niveles I y II de Inglés Transversal.',
+    materiaIds: materiasTituloIntermedio,
+  },
 };

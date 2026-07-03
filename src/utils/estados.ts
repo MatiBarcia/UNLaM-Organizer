@@ -51,3 +51,12 @@ export function computeStats(
   }
   return { total: trackable.length, bloqueadas, disponibles, cursando, regularizadas, aprobadas };
 }
+
+export function computeMilestone(
+  materiaIds: string[],
+  estadosEfectivos: Record<string, EstadoMateria>,
+) {
+  const total = materiaIds.length;
+  const aprobadas = materiaIds.filter(id => estadosEfectivos[id] === 'aprobada').length;
+  return { aprobadas, total, completo: total > 0 && aprobadas === total };
+}

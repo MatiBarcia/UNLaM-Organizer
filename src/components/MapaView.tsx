@@ -25,13 +25,14 @@ const nodeTypes = { materia: MateriaNode, 'col-header': ColumnHeaderNode };
 interface MapaViewProps {
   materias: Materia[];
   estadosEfectivos: Record<string, EstadoMateria>;
+  milestoneIds?: Set<string>;
   onSelectMateria: (id: string | null) => void;
   simMode: boolean;
   simOverrides: ProgresoPerfil;
   onSimClick: (id: string) => void;
 }
 
-export function MapaView({ materias, estadosEfectivos, onSelectMateria, simMode, simOverrides, onSimClick }: MapaViewProps) {
+export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMateria, simMode, simOverrides, onSimClick }: MapaViewProps) {
   const { theme } = useTheme();
   const dark = theme === 'dark';
   const EC = getEstadoColors(theme);
@@ -39,8 +40,8 @@ export function MapaView({ materias, estadosEfectivos, onSelectMateria, simMode,
   const [isMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
 
   const { nodes: computed, edges: computedEdges } = useMemo(
-    () => buildGraph(materias, estadosEfectivos),
-    [materias, estadosEfectivos],
+    () => buildGraph(materias, estadosEfectivos, milestoneIds),
+    [materias, estadosEfectivos, milestoneIds],
   );
 
   // Bounds of the first year (its two columns), independent of estado (so it doesn't recompute on every progress change)

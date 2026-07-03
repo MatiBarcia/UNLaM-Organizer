@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
-import { Sun, Moon, FlaskConical, Download, Upload, Menu } from 'lucide-react';
+import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria } from '../types';
-import { computeStats, getEstadoColors } from '../utils/estados';
+import { computeStats, computeMilestone, getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
 
 interface HeaderProps {
@@ -24,6 +24,16 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
   const EC = getEstadoColors(theme);
   const s = computeStats(carrera.materias, estadosEfectivos);
   const pct = s.total > 0 ? Math.round((s.aprobadas / s.total) * 100) : 0;
+
+  const titInt = carrera.tituloIntermedio;
+  const milestone = titInt ? computeMilestone(titInt.materiaIds, estadosEfectivos) : null;
+  // Posición del marcador en la barra: proporción de la carrera que representa el hito.
+  const milestonePct = milestone && s.total > 0
+    ? Math.min(100, Math.round((milestone.total / s.total) * 100))
+    : 0;
+  const milestoneTitle = titInt && milestone
+    ? `Título intermedio — ${titInt.nombre}\n${milestone.aprobadas}/${milestone.total} materias aprobadas${milestone.completo ? ' · ¡Completo!' : ''}`
+    : undefined;
 
   function runAndClose(fn: () => void) {
     fn();
@@ -50,8 +60,21 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
         </div>
         <div className="hdr-progress-bar">
           <div className="hdr-progress-fill" style={{ width: `${pct}%` }} />
+          {milestone && (
+            <div
+              className={`hdr-milestone-marker${milestone.completo ? ' hdr-milestone-marker--done' : ''}`}
+              style={{ left: `${milestonePct}%` }}
+              title={milestoneTitle}
+            />
+          )}
         </div>
         <div className="hdr-pills">
+          {milestone && (
+            <span className={`hdr-pill hdr-pill--titint${milestone.completo ? ' hdr-pill--titint-done' : ''}`} title={milestoneTitle}>
+              {milestone.completo ? <Check size={11} /> : <Award size={11} />}
+              Título intermedio {milestone.aprobadas}/{milestone.total}
+            </span>
+          )}
           {s.cursando > 0 && (
             <span className="hdr-pill" style={{ background: EC.cursando.bg, color: EC.cursando.text, borderColor: EC.cursando.border }}>
               {s.cursando} cursando

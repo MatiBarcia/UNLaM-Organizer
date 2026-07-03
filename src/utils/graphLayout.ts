@@ -14,6 +14,7 @@ const HEADER_GAP = 10;
 export function buildGraph(
   materias: Materia[],
   estadosEfectivos: Record<string, EstadoMateria>,
+  milestoneIds?: Set<string>,
 ): { nodes: Node[]; edges: Edge[] } {
   const mainCols = new Map<number, Materia[]>();
   const transCols = new Map<number, Materia[]>();
@@ -87,6 +88,7 @@ export function buildGraph(
           nombre: m.nombre,
           estado: estadosEfectivos[m.id] ?? 'bloqueada',
           tipo: m.tipo,
+          tituloIntermedio: milestoneIds?.has(m.id) ?? false,
         } as MateriaNodeData,
         width: NODE_W,
         height: NODE_H,

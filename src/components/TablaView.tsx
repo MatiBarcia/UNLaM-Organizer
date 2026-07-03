@@ -1,5 +1,5 @@
 import { useState, useCallback, type ChangeEvent } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Award } from 'lucide-react';
 import type { EstadoMateria, Materia, MateriaProgreso, ProgresoPerfil } from '../types';
 import { getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
@@ -8,6 +8,7 @@ interface TablaViewProps {
   materias: Materia[];
   progreso: ProgresoPerfil;
   estadosEfectivos: Record<string, EstadoMateria>;
+  milestoneIds?: Set<string>;
   onSelectMateria: (id: string) => void;
   onSetEstado: (id: string, estado: MateriaProgreso['estado']) => void;
   onRemoveMateria: (id: string) => void;
@@ -40,9 +41,10 @@ interface RowProps {
   onSelect: () => void;
   showCuatrimestre: boolean;
   showAnio: boolean;
+  esTituloIntermedio: boolean;
 }
 
-function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdateGrades, onSelect, showCuatrimestre, showAnio }: RowProps) {
+function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdateGrades, onSelect, showCuatrimestre, showAnio, esTituloIntermedio }: RowProps) {
   const { theme } = useTheme();
   const EC = getEstadoColors(theme);
   const c = EC[estado];
@@ -72,6 +74,11 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
       <td className="td-nombre">
         <button className="td-nombre-btn" onClick={onSelect}>{materia.nombre}</button>
         {materia.esAnual && <span className="row-badge-anual">Anual</span>}
+        {esTituloIntermedio && (
+          <span className="row-badge-titint" title="Cuenta para el Título Intermedio">
+            <Award size={11} /> T. Int.
+          </span>
+        )}
       </td>
       {showAnio && <td className="td-center" data-label="Año">{materia.anio}°</td>}
       {showCuatrimestre && <td className="td-center td-secondary" data-label="C°">{materia.cuatrimestre}°</td>}
@@ -116,6 +123,7 @@ export function TablaView({
   materias,
   progreso,
   estadosEfectivos,
+  milestoneIds,
   onSelectMateria,
   onSetEstado,
   onRemoveMateria,
@@ -278,6 +286,7 @@ export function TablaView({
                 onSelect={() => onSelectMateria(m.id)}
                 showCuatrimestre={showCuatrimestre}
                 showAnio={showAnio}
+                esTituloIntermedio={milestoneIds?.has(m.id) ?? false}
               />
             ))}
             {filteredMain.length === 0 && filteredTransversals.length === 0 && (
@@ -304,6 +313,7 @@ export function TablaView({
                     onSelect={() => onSelectMateria(m.id)}
                     showCuatrimestre={showCuatrimestre}
                     showAnio={showAnio}
+                    esTituloIntermedio={milestoneIds?.has(m.id) ?? false}
                   />
                 ))}
               </>
