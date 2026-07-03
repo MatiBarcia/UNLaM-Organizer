@@ -83,7 +83,6 @@ export function AppInner({ carrera }: AppInnerProps) {
   }
 
   function handleSimClick(id: string) {
-    if (estadosEfectivos[id] === 'bloqueada') return;
     setSimOverrides(prev => {
       const next = { ...prev };
       if (next[id]) {

@@ -127,21 +127,21 @@ export function TablaView({
   const { theme } = useTheme();
   const EC = getEstadoColors(theme);
   const [query, setQuery] = useState('');
-  const [filterEstado, setFilterEstado] = useState<EstadoMateria | null>(null);
-  const [filterAnio, setFilterAnio] = useState<number | 'transversal' | null>(null);
+  const [filterEstados, setFilterEstados] = useState<EstadoMateria[]>([]);
+  const [filterAnios, setFilterAnios] = useState<(number | 'transversal')[]>([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const activeFilterCount = (filterEstado ? 1 : 0) + (filterAnio !== null ? 1 : 0);
+  const activeFilterCount = filterEstados.length + filterAnios.length;
 
   const years = [...new Set(
     materias.filter(m => m.tipo !== 'transversal' && m.tipo !== 'electiva_opcion').map(m => m.anio)
   )].sort((a, b) => a - b);
 
   const toggleEstado = useCallback((e: EstadoMateria) => {
-    setFilterEstado(prev => (prev === e ? null : e));
+    setFilterEstados(prev => (prev.includes(e) ? prev.filter(x => x !== e) : [...prev, e]));
   }, []);
 
   const toggleAnio = useCallback((a: number | 'transversal') => {
-    setFilterAnio(prev => (prev === a ? null : a));
+    setFilterAnios(prev => (prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a]));
   }, []);
 
   const matchesQuery = (m: Materia) => {
@@ -150,21 +150,23 @@ export function TablaView({
     return m.nombre.toLowerCase().includes(q) || m.codigo.includes(q);
   };
 
-  const showMain = filterAnio !== 'transversal';
-  const showTransversals = filterAnio === null || filterAnio === 'transversal';
+  const yearFilters = filterAnios.filter((a): a is number => typeof a === 'number');
+  const transversalSelected = filterAnios.includes('transversal');
+  const showMain = filterAnios.length === 0 || yearFilters.length > 0;
+  const showTransversals = filterAnios.length === 0 || transversalSelected;
 
   const filteredMain = showMain ? materias.filter(m => {
     if (m.tipo === 'electiva_opcion' || m.tipo === 'transversal') return false;
-    if (typeof filterAnio === 'number' && m.anio !== filterAnio) return false;
+    if (yearFilters.length > 0 && !yearFilters.includes(m.anio)) return false;
     if (!matchesQuery(m)) return false;
-    if (filterEstado && estadosEfectivos[m.id] !== filterEstado) return false;
+    if (filterEstados.length > 0 && !filterEstados.includes(estadosEfectivos[m.id])) return false;
     return true;
   }) : [];
 
   const filteredTransversals = showTransversals ? materias.filter(m => {
     if (m.tipo !== 'transversal') return false;
     if (!matchesQuery(m)) return false;
-    if (filterEstado && estadosEfectivos[m.id] !== filterEstado) return false;
+    if (filterEstados.length > 0 && !filterEstados.includes(estadosEfectivos[m.id])) return false;
     return true;
   }) : [];
 
@@ -213,11 +215,12 @@ export function TablaView({
           <div className="filter-group">
             {ALL_ESTADOS.map(e => {
               const col = EC[e];
+              const active = filterEstados.includes(e);
               return (
                 <button
                   key={e}
-                  className={`filter-btn${filterEstado === e ? ' active' : ''}`}
-                  style={filterEstado === e ? { background: col.bg, borderColor: col.border, color: col.text } : undefined}
+                  className={`filter-btn${active ? ' active' : ''}`}
+                  style={active ? { background: col.bg, borderColor: col.border, color: col.text } : undefined}
                   onClick={() => toggleEstado(e)}
                 >
                   {col.label}
@@ -229,14 +232,14 @@ export function TablaView({
             {showAnio && years.map(a => (
               <button
                 key={a}
-                className={`filter-btn${filterAnio === a ? ' active' : ''}`}
+                className={`filter-btn${filterAnios.includes(a) ? ' active' : ''}`}
                 onClick={() => toggleAnio(a)}
               >
                 {a}° Año
               </button>
             ))}
             <button
-              className={`filter-btn${filterAnio === 'transversal' ? ' active' : ''}`}
+              className={`filter-btn${transversalSelected ? ' active' : ''}`}
               onClick={() => toggleAnio('transversal')}
             >
               Transversales
