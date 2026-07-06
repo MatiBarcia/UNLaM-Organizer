@@ -16,7 +16,7 @@ export const ESTADO_COLORS = {
   bloqueada:    { border: '#424242', bg: '#191919', text: '#5e5e5e', label: 'Bloqueada'    },
   disponible:   { border: '#3b82f6', bg: '#0e1e35', text: '#93c5fd', label: 'Disponible'   },
   cursando:     { border: '#f59e0b', bg: '#3d2706', text: '#fde68a', label: 'Cursando'     },
-  regularizada: { border: '#22c55e', bg: '#052e16', text: '#86efac', label: 'Regularizada' },
+  regularizada: { border: '#f472b6', bg: '#3d0a2b', text: '#fbcfe8', label: 'Regularizada' },
   aprobada:     { border: '#4ade80', bg: '#14532d', text: '#bbf7d0', label: 'Aprobada'     },
 } satisfies Record<EstadoMateria, { border: string; bg: string; text: string; label: string }>;
 
@@ -24,7 +24,7 @@ export const ESTADO_COLORS_LIGHT = {
   bloqueada:    { border: '#94a3b8', bg: '#f1f5f9', text: '#64748b', label: 'Bloqueada'    },
   disponible:   { border: '#2563eb', bg: '#dbeafe', text: '#1e40af', label: 'Disponible'   },
   cursando:     { border: '#d97706', bg: '#fef3c7', text: '#92400e', label: 'Cursando'     },
-  regularizada: { border: '#16a34a', bg: '#dcfce7', text: '#166534', label: 'Regularizada' },
+  regularizada: { border: '#db2777', bg: '#fce7f3', text: '#9d174d', label: 'Regularizada' },
   aprobada:     { border: '#15803d', bg: '#bbf7d0', text: '#14532d', label: 'Aprobada'     },
 } satisfies Record<EstadoMateria, { border: string; bg: string; text: string; label: string }>;
 

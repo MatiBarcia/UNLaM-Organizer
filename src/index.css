@@ -15,7 +15,7 @@
   --legend-bg:        rgba(16, 16, 16, 0.92);
   --row-hover:        rgba(255, 255, 255, 0.04);
   --row-aprobada:     rgba(20, 83, 45, 0.18);
-  --row-regularizada: rgba(5, 46, 22, 0.18);
+  --row-regularizada: rgba(61, 10, 43, 0.18);
   --row-cursando:     rgba(61, 39, 6, 0.18);
 }
 
@@ -35,7 +35,7 @@
   --legend-bg:        rgba(248, 250, 252, 0.92);
   --row-hover:        rgba(0, 0, 0, 0.04);
   --row-aprobada:     rgba(187, 247, 208, 0.4);
-  --row-regularizada: rgba(220, 252, 231, 0.4);
+  --row-regularizada: rgba(252, 231, 243, 0.4);
   --row-cursando:     rgba(254, 243, 199, 0.5);
 }
 
