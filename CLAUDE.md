@@ -73,8 +73,8 @@ Flujo: `main.tsx` → `App.tsx` (rutas + `ThemeProvider`) → páginas.
 ## Convenciones
 
 - **Idioma**: código, nombres de dominio, comentarios y mensajes de commit en **español** (nombres de materias/carreras y términos como `aprobada`, `correlativas`, `cuatrimestre`). Seguir ese estilo.
-- **Commits**: formato tipo Conventional Commits en español (`feat:`, `fix:`, `style:`, ...). Este repo firma los commits con un trailer `Co-Authored-By: Claude ...`.
-- **Git / PRs**: `origin` es el fork `natariolucas/unlam-organizer`; el upstream (base de los PRs, branch `main`) es **`MatiBarcia/UNLaM-Organizer`**. `gh` CLI **no está instalado** (y `brew install gh` falla por un tap ajeno sin trust). Para PRs: pushear la branch y usar el compare URL, o dejar la descripción en un `.md` para abrirlo a mano.
+- **Commits**: formato tipo Conventional Commits en español (`feat:`, `fix:`, `style:`, `docs:`, ...).
+- **Git / PRs**: la contribución es vía fork → PR contra la branch `main` del repositorio upstream. Trabajar en una branch por feature (`feat/...`, `fix/...`, `docs/...`), no directo sobre `main`.
 - No hay tests ni framework de testing configurado. La verificación es typecheck + lint + prueba manual en el navegador (`npm run dev`).
 
 ## Notas al agregar features
