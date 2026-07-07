@@ -31,11 +31,23 @@ export interface MateriaProgreso {
   notaFinal: number | null;
 }
 
+/** Hito de título intermedio que se obtiene aprobando un subconjunto de materias. */
+export interface TituloIntermedio {
+  /** Nombre del título, ej. "Técnico Universitario en Desarrollo de Software" */
+  nombre: string;
+  /** Descripción del criterio de obtención */
+  descripcion?: string;
+  /** Ids de las materias que se requieren para obtenerlo */
+  materiaIds: string[];
+}
+
 export interface Carrera {
   id: string;
   nombre: string;
   plan: string;
   materias: Materia[];
+  /** Título intermedio de la carrera, si lo tiene */
+  tituloIntermedio?: TituloIntermedio;
   /** true si el cuatrimestre de cada materia fue inferido (el plan oficial solo publica el año) */
   cuatrimestreEstimado?: boolean;
   /** true si el año de cada materia también fue inferido (el plan oficial no publica ni año ni cuatrimestre) */
@@ -50,4 +62,6 @@ export interface MateriaNodeData extends Record<string, unknown> {
   estado: EstadoMateria;
   tipo: TipoMateria;
   simApproved?: boolean;
+  /** true si la materia cuenta para el título intermedio de la carrera */
+  tituloIntermedio?: boolean;
 }

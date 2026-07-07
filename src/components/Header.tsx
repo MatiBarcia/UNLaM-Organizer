@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
-import { Sun, Moon, FlaskConical, Download, Upload, Menu } from 'lucide-react';
+import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria } from '../types';
-import { computeStats, getEstadoColors } from '../utils/estados';
+import { computeStats, computeMilestone, getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
 
 interface HeaderProps {
@@ -24,6 +24,12 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
   const EC = getEstadoColors(theme);
   const s = computeStats(carrera.materias, estadosEfectivos);
   const pct = s.total > 0 ? Math.round((s.aprobadas / s.total) * 100) : 0;
+
+  const titInt = carrera.tituloIntermedio;
+  const milestone = titInt ? computeMilestone(titInt.materiaIds, estadosEfectivos) : null;
+  const milestoneTitle = titInt && milestone
+    ? `Título intermedio — ${titInt.nombre}\n${milestone.aprobadas}/${milestone.total} materias aprobadas${milestone.completo ? ' · ¡Completo!' : ''}`
+    : undefined;
 
   function runAndClose(fn: () => void) {
     fn();
@@ -65,6 +71,12 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
           <span className="hdr-pill" style={{ background: EC.disponible.bg, color: EC.disponible.text, borderColor: EC.disponible.border }}>
             {s.disponibles} disponibles
           </span>
+          {milestone && (
+            <span className={`hdr-pill hdr-pill--titint${milestone.completo ? ' hdr-pill--titint-done' : ''}`} title={milestoneTitle}>
+              {milestone.completo ? <Check size={11} /> : <Award size={11} />}
+              Título intermedio {milestone.aprobadas}/{milestone.total}
+            </span>
+          )}
         </div>
       </div>
 
