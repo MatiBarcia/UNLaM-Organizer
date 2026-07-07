@@ -160,11 +160,6 @@ input  { font-family: inherit; }
   color: #d8b4fe;
   margin-left: auto;
 }
-.hdr-pill--titint-done {
-  background: #422006;
-  border-color: #facc15;
-  color: #fde68a;
-}
 
 /* ── View Toggle ───────────────────────────────────────────────────── */
 .view-toggle {

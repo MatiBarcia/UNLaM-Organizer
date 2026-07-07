@@ -72,7 +72,7 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
             {s.disponibles} disponibles
           </span>
           {milestone && (
-            <span className={`hdr-pill hdr-pill--titint${milestone.completo ? ' hdr-pill--titint-done' : ''}`} title={milestoneTitle}>
+            <span className="hdr-pill hdr-pill--titint" title={milestoneTitle}>
               {milestone.completo ? <Check size={11} /> : <Award size={11} />}
               Título intermedio {milestone.aprobadas}/{milestone.total}
             </span>
