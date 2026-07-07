@@ -381,13 +381,16 @@ input  { font-family: inherit; }
 }
 .has-tooltip:hover::after { opacity: 1; }
 
-/* ── Ocultar aprobadas (botón-ícono) ───────────────────────────────── */
+/* ── Ocultar aprobadas ─────────────────────────────────────────────── */
+/* Comparte la base tipo píldora de .sim-btn (queda a su izquierda), pero
+   usa el color de acento en vez del ámbar para diferenciar su función. */
 .hide-approved-btn { cursor: pointer; }
 .hide-approved-btn:hover { border-color: var(--accent); color: var(--accent); }
 .hide-approved-btn--on {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   border-color: var(--accent);
   color: var(--accent);
+  font-weight: 600;
 }
 
 /* ── Mapa View ─────────────────────────────────────────────────────── */

@@ -110,9 +110,17 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
             <Upload size={15} />
             Importar
           </button>
+          <button
+            className={`sim-btn${simMode ? ' sim-btn--active' : ''}`}
+            onClick={() => runAndClose(onToggleSim)}
+            title={simMode ? 'Salir del modo simulación' : 'Simular avance académico'}
+          >
+            <FlaskConical size={15} />
+            {simMode ? 'Salir simulación' : 'Simular'}
+          </button>
           {!simMode && (
             <button
-              className={`icon-btn hide-approved-btn has-tooltip${hideApproved ? ' hide-approved-btn--on' : ''}`}
+              className={`sim-btn hide-approved-btn has-tooltip${hideApproved ? ' hide-approved-btn--on' : ''}`}
               onClick={onToggleHideApproved}
               role="switch"
               aria-checked={hideApproved}
@@ -123,14 +131,6 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
               <span className="icon-btn-label">{hideApproved ? 'Mostrar aprobadas' : 'Ocultar aprobadas'}</span>
             </button>
           )}
-          <button
-            className={`sim-btn${simMode ? ' sim-btn--active' : ''}`}
-            onClick={() => runAndClose(onToggleSim)}
-            title={simMode ? 'Salir del modo simulación' : 'Simular avance académico'}
-          >
-            <FlaskConical size={15} />
-            {simMode ? 'Salir simulación' : 'Simular'}
-          </button>
           <button className="icon-btn" onClick={() => runAndClose(toggleTheme)} title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}>
             {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             <span className="icon-btn-label">{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
