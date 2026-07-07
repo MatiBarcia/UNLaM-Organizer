@@ -112,15 +112,15 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
           </button>
           {!simMode && (
             <button
-              className={`hide-approved-switch${hideApproved ? ' hide-approved-switch--on' : ''}`}
+              className={`icon-btn hide-approved-btn has-tooltip${hideApproved ? ' hide-approved-btn--on' : ''}`}
               onClick={onToggleHideApproved}
               role="switch"
               aria-checked={hideApproved}
-              title={hideApproved ? 'Mostrar materias aprobadas' : 'Ocultar materias aprobadas'}
+              aria-label={hideApproved ? 'Mostrar materias aprobadas' : 'Ocultar materias aprobadas'}
+              data-tooltip={hideApproved ? 'Mostrar materias aprobadas' : 'Ocultar materias aprobadas'}
             >
-              <EyeOff size={15} />
-              <span className="hide-approved-label">Ocultar aprobadas</span>
-              <span className="hide-approved-track"><span className="hide-approved-thumb" /></span>
+              <EyeOff size={17} />
+              <span className="icon-btn-label">{hideApproved ? 'Mostrar aprobadas' : 'Ocultar aprobadas'}</span>
             </button>
           )}
           <button

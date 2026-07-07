@@ -359,50 +359,36 @@ input  { font-family: inherit; }
   font-weight: 600;
 }
 
-/* ── Ocultar aprobadas (switch) ────────────────────────────────────── */
-.hide-approved-switch {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border: 1px solid var(--brd);
-  border-radius: 7px;
-  background: var(--bg);
-  color: var(--txt-2);
-  font-size: 12px;
+/* ── Tooltip ───────────────────────────────────────────────────────── */
+.has-tooltip { position: relative; }
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: var(--txt);
+  color: var(--bg-1);
+  font-size: 11px;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
 }
-.hide-approved-switch:hover { border-color: var(--accent); color: var(--accent); }
-.hide-approved-switch--on {
+.has-tooltip:hover::after { opacity: 1; }
+
+/* ── Ocultar aprobadas (botón-ícono) ───────────────────────────────── */
+.hide-approved-btn { cursor: pointer; }
+.hide-approved-btn:hover { border-color: var(--accent); color: var(--accent); }
+.hide-approved-btn--on {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   border-color: var(--accent);
   color: var(--accent);
-  font-weight: 600;
 }
-.hide-approved-label { white-space: nowrap; }
-.hide-approved-track {
-  position: relative;
-  width: 28px;
-  height: 16px;
-  border-radius: 999px;
-  background: var(--brd-2);
-  transition: background 0.15s;
-  flex-shrink: 0;
-}
-.hide-approved-switch--on .hide-approved-track { background: var(--accent); }
-.hide-approved-thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform 0.15s;
-}
-.hide-approved-switch--on .hide-approved-thumb { transform: translateX(12px); }
 
 /* ── Mapa View ─────────────────────────────────────────────────────── */
 .mapa-wrap { width: 100%; height: 100%; position: relative; }
