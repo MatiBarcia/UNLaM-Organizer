@@ -130,10 +130,10 @@ input  { font-family: inherit; }
 .hdr-prog-pct    { color: var(--txt-3); font-size: 11px; }
 
 .hdr-progress-bar {
-  position: relative;
   height: 4px;
   background: var(--brd);
   border-radius: 2px;
+  overflow: hidden;
 }
 .hdr-progress-fill {
   height: 100%;
@@ -141,32 +141,6 @@ input  { font-family: inherit; }
   border-radius: 2px;
   transition: width 0.4s ease;
 }
-
-/* Marcador del título intermedio sobre la barra de progreso */
-.hdr-milestone-marker {
-  position: absolute;
-  top: -4px;
-  bottom: -4px;
-  width: 2px;
-  transform: translateX(-1px);
-  background: #a855f7;
-  border-radius: 1px;
-  z-index: 2;
-  cursor: help;
-}
-.hdr-milestone-marker::before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: 50%;
-  width: 7px;
-  height: 7px;
-  transform: translateX(-50%) rotate(45deg);
-  background: #a855f7;
-  border-radius: 1px;
-}
-.hdr-milestone-marker--done,
-.hdr-milestone-marker--done::before { background: #facc15; }
 
 .hdr-pills { display: flex; gap: 6px; align-items: center; }
 .hdr-pill {
@@ -184,6 +158,7 @@ input  { font-family: inherit; }
   background: #2e1065;
   border-color: #a855f7;
   color: #d8b4fe;
+  margin-left: auto;
 }
 .hdr-pill--titint-done {
   background: #422006;
@@ -465,9 +440,9 @@ input  { font-family: inherit; }
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #2e1065;
-  border: 1px solid #a855f7;
-  color: #d8b4fe;
+  background: rgba(139, 122, 168, 0.12);
+  border: 1px solid rgba(139, 122, 168, 0.4);
+  color: #b8a9d1;
   z-index: 1;
 }
 
@@ -766,16 +741,9 @@ input  { font-family: inherit; }
 .row-badge-titint {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  font-size: 9px;
-  padding: 1px 5px;
-  background: #2e1065;
-  color: #d8b4fe;
-  border: 1px solid #a855f7;
-  border-radius: 3px;
+  color: #a855f7;
   margin-left: 6px;
   vertical-align: middle;
-  font-weight: 600;
 }
 
 .estado-select {

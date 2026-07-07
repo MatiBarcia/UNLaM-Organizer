@@ -76,7 +76,7 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
         {materia.esAnual && <span className="row-badge-anual">Anual</span>}
         {esTituloIntermedio && (
           <span className="row-badge-titint" title="Cuenta para el Título Intermedio">
-            <Award size={11} /> T. Int.
+            <Award size={11} />
           </span>
         )}
       </td>

@@ -27,10 +27,6 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
 
   const titInt = carrera.tituloIntermedio;
   const milestone = titInt ? computeMilestone(titInt.materiaIds, estadosEfectivos) : null;
-  // Posición del marcador en la barra: proporción de la carrera que representa el hito.
-  const milestonePct = milestone && s.total > 0
-    ? Math.min(100, Math.round((milestone.total / s.total) * 100))
-    : 0;
   const milestoneTitle = titInt && milestone
     ? `Título intermedio — ${titInt.nombre}\n${milestone.aprobadas}/${milestone.total} materias aprobadas${milestone.completo ? ' · ¡Completo!' : ''}`
     : undefined;
@@ -60,21 +56,8 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
         </div>
         <div className="hdr-progress-bar">
           <div className="hdr-progress-fill" style={{ width: `${pct}%` }} />
-          {milestone && (
-            <div
-              className={`hdr-milestone-marker${milestone.completo ? ' hdr-milestone-marker--done' : ''}`}
-              style={{ left: `${milestonePct}%` }}
-              title={milestoneTitle}
-            />
-          )}
         </div>
         <div className="hdr-pills">
-          {milestone && (
-            <span className={`hdr-pill hdr-pill--titint${milestone.completo ? ' hdr-pill--titint-done' : ''}`} title={milestoneTitle}>
-              {milestone.completo ? <Check size={11} /> : <Award size={11} />}
-              Título intermedio {milestone.aprobadas}/{milestone.total}
-            </span>
-          )}
           {s.cursando > 0 && (
             <span className="hdr-pill" style={{ background: EC.cursando.bg, color: EC.cursando.text, borderColor: EC.cursando.border }}>
               {s.cursando} cursando
@@ -88,6 +71,12 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
           <span className="hdr-pill" style={{ background: EC.disponible.bg, color: EC.disponible.text, borderColor: EC.disponible.border }}>
             {s.disponibles} disponibles
           </span>
+          {milestone && (
+            <span className={`hdr-pill hdr-pill--titint${milestone.completo ? ' hdr-pill--titint-done' : ''}`} title={milestoneTitle}>
+              {milestone.completo ? <Check size={11} /> : <Award size={11} />}
+              Título intermedio {milestone.aprobadas}/{milestone.total}
+            </span>
+          )}
         </div>
       </div>
 
