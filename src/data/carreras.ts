@@ -5,6 +5,8 @@ import { ingenieriaMecanica } from './ingMecanica';
 import { ingenieriaCivil } from './ingCivil';
 import { ingenieriaIndustrial } from './ingIndustrial';
 import { ingenieriaElectronica } from './ingElectronica';
+import { ingenieriaEnergiasRenovables } from './ingEnergiasRenovables';
+import { gestionTecnologia } from './gestionTecnologia';
 import { enfermeria } from './enfermeria';
 import { anatomiaPatologica } from './anatomiaPatologica';
 import { kinesiologia } from './kinesiologia';
@@ -83,6 +85,22 @@ export const CARRERAS: CarreraInfo[] = [
     plan: '2023',
     disponible: true,
     datos: ingenieriaElectronica,
+  },
+  {
+    id: 'ing-energias-renovables',
+    nombre: 'Ingeniería en Energías Renovables',
+    departamento: 'Ingeniería e Investigaciones Tecnológicas',
+    plan: '2024',
+    disponible: true,
+    datos: ingenieriaEnergiasRenovables,
+  },
+  {
+    id: 'lic-gestion-tecnologia',
+    nombre: 'Licenciatura en Gestión de Tecnología',
+    departamento: 'Ingeniería e Investigaciones Tecnológicas',
+    plan: '2011',
+    disponible: true,
+    datos: gestionTecnologia,
   },
 
   // ── Salud ────────────────────────────────────────────────────────────
