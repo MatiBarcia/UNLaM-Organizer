@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check } from 'lucide-react';
+import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria, ProgresoPerfil } from '../types';
 import { computeStats, computeMilestone, getEstadoColors } from '../utils/estados';
@@ -13,11 +13,13 @@ interface HeaderProps {
   onViewChange: (v: 'mapa' | 'tabla') => void;
   simMode: boolean;
   onToggleSim: () => void;
+  hideApproved: boolean;
+  onToggleHideApproved: () => void;
   onExport: () => void;
   onImportProgreso: (progreso: ProgresoPerfil) => void;
 }
 
-export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, onExport, onImportProgreso }: HeaderProps) {
+export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, hideApproved, onToggleHideApproved, onExport, onImportProgreso }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -108,6 +110,19 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
             <Upload size={15} />
             Importar
           </button>
+          {!simMode && (
+            <button
+              className={`hide-approved-switch${hideApproved ? ' hide-approved-switch--on' : ''}`}
+              onClick={onToggleHideApproved}
+              role="switch"
+              aria-checked={hideApproved}
+              title={hideApproved ? 'Mostrar materias aprobadas' : 'Ocultar materias aprobadas'}
+            >
+              <EyeOff size={15} />
+              <span className="hide-approved-label">Ocultar aprobadas</span>
+              <span className="hide-approved-track"><span className="hide-approved-thumb" /></span>
+            </button>
+          )}
           <button
             className={`sim-btn${simMode ? ' sim-btn--active' : ''}`}
             onClick={() => runAndClose(onToggleSim)}
