@@ -6,7 +6,6 @@ import { TablaView } from './TablaView';
 import { MateriaPanel } from './MateriaPanel';
 import { useProgreso } from '../hooks/useProgreso';
 import { getEstadoEfectivo } from '../utils/estados';
-import { validateImport } from '../utils/validateImport';
 
 interface AppInnerProps {
   carrera: Carrera;
@@ -60,25 +59,6 @@ export function AppInner({ carrera }: AppInnerProps) {
     URL.revokeObjectURL(url);
   }
 
-  function handleImportFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      try {
-        const raw = JSON.parse(e.target!.result as string) as unknown;
-        const result = validateImport(raw, carrera.id);
-        if (!result.ok) {
-          alert(`Error al importar: ${result.error}`);
-          return;
-        }
-        if (!window.confirm('¿Importar este progreso? Esto reemplazará tu progreso actual en esta carrera.')) return;
-        importProgreso(result.progreso);
-      } catch {
-        alert('El archivo no es un JSON válido.');
-      }
-    };
-    reader.readAsText(file);
-  }
-
   function handleToggleSim() {
     setSimMode(prev => {
       if (!prev) setSelectedId(null);
@@ -109,7 +89,7 @@ export function AppInner({ carrera }: AppInnerProps) {
         simMode={simMode}
         onToggleSim={handleToggleSim}
         onExport={handleExport}
-        onImportFile={handleImportFile}
+        onImportProgreso={importProgreso}
       />
 
       <div className="app-body">

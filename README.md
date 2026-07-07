@@ -20,6 +20,8 @@ UNLaM Organizer es una aplicación web que te permite ver el plan de estudios co
 | Ingeniería Civil | 2025 |
 | Ingeniería Industrial | 2024 |
 | Ingeniería Electrónica | 2023 |
+| Ingeniería en Energías Renovables | 2024 |
+| Licenciatura en Gestión de Tecnología | 2011 |
 
 ### Salud
 
@@ -83,10 +85,10 @@ Lista todas las materias en formato tabla con filtros por:
 - **Año** (dinámico según la carrera, de 1° hasta el último año del plan)
 - **Transversales** (Inglés y Computación Transversal, en su propio filtro separado)
 
-Cada fila tiene un indicador de color por año en el borde izquierdo para facilitar la lectura. Desde la tabla podés cambiar el estado de cada materia y registrar las notas de parciales y final. En las carreras donde el año o el cuatrimestre de las materias fue estimado (ver sección de carreras disponibles), esas columnas y su filtro no se muestran.
+Los filtros son combinables: se puede marcar más de una opción a la vez (por ejemplo, "1° Año" + "2° Año" para ver las materias de ambos juntas, o varios estados en simultáneo). Cada fila tiene un indicador de color por año en el borde izquierdo para facilitar la lectura. Desde la tabla podés cambiar el estado de cada materia y registrar las notas de parciales y final. En las carreras donde el año o el cuatrimestre de las materias fue estimado (ver sección de carreras disponibles), esas columnas y su filtro no se muestran.
 
 ### Modo Simulación
-Permite simular un escenario académico marcando materias como aprobadas temporalmente, para visualizar qué otras materias se desbloquearían. Al salir del modo simulación todo vuelve a su estado real.
+Permite simular un escenario académico marcando materias como aprobadas temporalmente, para visualizar qué otras materias se desbloquearían — incluso materias sin sus correlativas cumplidas, para poder explorar libremente distintos caminos hipotéticos. Al salir del modo simulación todo vuelve a su estado real.
 
 ### Barra de progreso
 El encabezado muestra cuántas materias aprobaste sobre el total de la carrera (obligatorias + electivas), el porcentaje de avance, y las materias en curso o regularizadas.
@@ -96,6 +98,8 @@ Soporte completo de tema oscuro (por defecto) y claro, con colores optimizados p
 
 ### Exportar / Importar progreso
 Permite descargar el progreso de una carrera como archivo `.json` y volver a importarlo (por ejemplo, para pasar los datos entre dispositivos manualmente).
+
+También se puede importar directamente el PDF de **historia académica** descargado desde Intraconsulta (Mi matrícula → Historia académica → Descargar). Al tocar "Importar" se muestra un instructivo con los pasos para descargarlo y un selector de archivo que acepta tanto el PDF como el `.json`. La app reconoce automáticamente las materias aprobadas y sus notas, verifica que el documento corresponda a la carrera que estás viendo (para no mezclar datos de otra carrera), e ignora los registros de un plan de estudios anterior que ya no correspondan al plan actual. Antes de aplicar los cambios se muestra un resumen de cuántas materias se reconocieron y cuántas se van a ignorar; la importación reemplaza todo el progreso actual de la carrera.
 
 ### Versión mobile
 La app es completamente usable desde el celular:
@@ -116,4 +120,6 @@ La app es completamente usable desde el celular:
 | [Vite 8](https://vitejs.dev/) | Bundler y servidor de desarrollo |
 | [@xyflow/react](https://reactflow.dev/) | Grafo de correlatividades interactivo |
 | [Lucide React](https://lucide.dev/) | Íconos de la interfaz |
+| [pdfjs-dist](https://mozilla.github.io/pdf.js/) | Lectura del PDF de historia académica para el importador |
+| [Vercel Speed Insights](https://vercel.com/docs/speed-insights) | Métricas de performance en producción |
 | CSS Custom Properties | Sistema de temas (dark/light) sin frameworks externos |

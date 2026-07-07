@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import type { Carrera, EstadoMateria } from '../types';
+import type { Carrera, EstadoMateria, ProgresoPerfil } from '../types';
 import { computeStats, computeMilestone, getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
+import { ImportModal } from './ImportModal';
 
 interface HeaderProps {
   carrera: Carrera;
@@ -13,14 +14,14 @@ interface HeaderProps {
   simMode: boolean;
   onToggleSim: () => void;
   onExport: () => void;
-  onImportFile: (file: File) => void;
+  onImportProgreso: (progreso: ProgresoPerfil) => void;
 }
 
-export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, onExport, onImportFile }: HeaderProps) {
+export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, onExport, onImportProgreso }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const EC = getEstadoColors(theme);
   const s = computeStats(carrera.materias, estadosEfectivos);
   const pct = s.total > 0 ? Math.round((s.aprobadas / s.total) * 100) : 0;
@@ -81,18 +82,6 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
       </div>
 
       <div className="hdr-right">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".json"
-          style={{ display: 'none' }}
-          onChange={e => {
-            const f = e.target.files?.[0];
-            if (f) onImportFile(f);
-            e.target.value = '';
-          }}
-        />
-
         <div className="view-toggle">
           <button
             className={`view-btn${view === 'mapa' ? ' active' : ''}`}
@@ -115,7 +104,7 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
             <Download size={15} />
             Exportar
           </button>
-          <button className="io-btn" onClick={() => runAndClose(() => fileInputRef.current?.click())} title="Importar progreso desde JSON">
+          <button className="io-btn" onClick={() => runAndClose(() => setImportOpen(true))} title="Importar progreso desde tu historia académica o un JSON">
             <Upload size={15} />
             Importar
           </button>
@@ -137,6 +126,14 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
           <Menu size={18} />
         </button>
       </div>
+
+      {importOpen && (
+        <ImportModal
+          carrera={carrera}
+          onClose={() => setImportOpen(false)}
+          onImport={onImportProgreso}
+        />
+      )}
     </header>
   );
 }
