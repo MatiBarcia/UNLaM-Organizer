@@ -26,6 +26,18 @@ import { administracion } from './administracion';
 import { contadorPublico } from './contadorPublico';
 import { economia } from './economia';
 import { comercioInternacional } from './comercioInternacional';
+import { animacionArteDigital } from './animacionArteDigital';
+import { artesAudiovisuales } from './artesAudiovisuales';
+import { artesEscenicas } from './artesEscenicas';
+import { desarrolloVideojuegos } from './desarrolloVideojuegos';
+import { disenoGraficoDigital } from './disenoGraficoDigital';
+import { guionAudiovisual } from './guionAudiovisual';
+import { locutorNacional } from './locutorNacional';
+import { periodismoDeportivo } from './periodismoDeportivo';
+import { publicidadComunicacion } from './publicidadComunicacion';
+import { produccionMusical } from './produccionMusical';
+import { produccionContenidos } from './produccionContenidos';
+import { licAnimacionDigital } from './licAnimacionDigital';
 
 export interface CarreraInfo {
   id: string;
@@ -261,6 +273,104 @@ export const CARRERAS: CarreraInfo[] = [
     plan: '2010',
     disponible: true,
     datos: gestionPublica,
+  },
+
+  // ── Artes y Medios de Comunicación ──────────────────────────────────────
+  {
+    id: 'tec-animacion-arte-digital',
+    nombre: 'Tecnicatura Universitaria en Animación y Arte Digital',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2020',
+    disponible: true,
+    datos: animacionArteDigital,
+  },
+  {
+    id: 'lic-animacion-digital',
+    nombre: 'Licenciatura en Animación Digital',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2024',
+    disponible: true,
+    datos: licAnimacionDigital,
+  },
+  {
+    id: 'tec-artes-audiovisuales',
+    nombre: 'Tecnicatura Universitaria en Artes Audiovisuales',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2019',
+    disponible: true,
+    datos: artesAudiovisuales,
+  },
+  {
+    id: 'tec-artes-escenicas',
+    nombre: 'Tecnicatura Universitaria en Artes Escénicas',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2019',
+    disponible: true,
+    datos: artesEscenicas,
+  },
+  {
+    id: 'tec-desarrollo-videojuegos',
+    nombre: 'Tecnicatura Universitaria en Desarrollo de Videojuegos',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2024',
+    disponible: true,
+    datos: desarrolloVideojuegos,
+  },
+  {
+    id: 'tec-diseno-grafico-digital',
+    nombre: 'Tecnicatura Universitaria en Diseño Gráfico y Digital',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2023',
+    disponible: true,
+    datos: disenoGraficoDigital,
+  },
+  {
+    id: 'tec-guion-audiovisual',
+    nombre: 'Tecnicatura Universitaria en Guion Audiovisual',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2021',
+    disponible: true,
+    datos: guionAudiovisual,
+  },
+  {
+    id: 'tec-locutor-nacional',
+    nombre: 'Locutor Nacional',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2010',
+    disponible: true,
+    datos: locutorNacional,
+  },
+  {
+    id: 'tec-periodismo-deportivo',
+    nombre: 'Tecnicatura Universitaria en Periodismo Deportivo Integral',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2020',
+    disponible: true,
+    datos: periodismoDeportivo,
+  },
+  {
+    id: 'tec-publicidad-comunicacion',
+    nombre: 'Tecnicatura Universitaria en Publicidad y Comunicación Estratégica',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2025',
+    disponible: true,
+    datos: publicidadComunicacion,
+  },
+  {
+    id: 'tec-produccion-musical',
+    nombre: 'Tecnicatura Universitaria en Producción Musical',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2025',
+    disponible: true,
+    datos: produccionMusical,
+  },
+  {
+    id: 'tec-produccion-contenidos',
+    nombre: 'Tecnicatura Universitaria en Producción de Contenidos para la Comunicación',
+    departamento: 'Artes y Medios de Comunicación',
+    plan: '2024',
+    disponible: true,
+    datos: produccionContenidos,
   },
 ];
 

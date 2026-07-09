@@ -1028,7 +1028,7 @@ input  { font-family: inherit; }
 
 .landing-main {
   flex: 1;
-  max-width: 820px;
+  max-width: 1000px;
   width: 100%;
   margin: 0 auto;
   padding: 40px 32px;
@@ -1084,14 +1084,13 @@ input  { font-family: inherit; }
 
 /* Departamentos — solapas de carpeta, color = categoría ---------------- */
 .dept-tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
 }
 
 .dept-tab {
   --dept-color: var(--l-accent);
-  flex: 1 1 130px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1399,8 +1398,8 @@ input  { font-family: inherit; }
   .landing { background-attachment: scroll; }
   body { background-attachment: scroll; }
   .landing-subtitle { font-size: 13px; }
+  .dept-tabs { grid-template-columns: 1fr; }
   .dept-tab {
-    flex-basis: 100%;
     flex-direction: row;
     align-items: center;
     gap: 12px;

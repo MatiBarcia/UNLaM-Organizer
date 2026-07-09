@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Landmark, Scale, Users, Cpu, HeartPulse, ArrowLeft, Sun, Moon } from 'lucide-react';
+import { BookOpen, Landmark, Scale, Users, Cpu, HeartPulse, Palette, ArrowLeft, Sun, Moon } from 'lucide-react';
 import { CARRERAS, DEPARTAMENTOS } from '../data/carreras';
 import { useTheme } from '../context/ThemeContext';
 
@@ -12,6 +12,7 @@ const DEPTO_META: Record<string, { icon: React.ReactNode; color: string }> = {
   'Ciencias Económicas': { icon: <Landmark size={20} />, color: '#b58f3a' },
   'Humanidades y Ciencias Sociales': { icon: <Users size={20} />, color: '#9c4f68' },
   'Derecho y Ciencias Políticas': { icon: <Scale size={20} />, color: '#4a6fa0' },
+  'Artes y Medios de Comunicación': { icon: <Palette size={20} />, color: '#7a5cad' },
 };
 
 function withDeptColor(color: string | undefined): CSSProperties {
