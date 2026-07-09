@@ -1,7 +1,11 @@
 import type { Carrera, ProgresoPerfil } from '../types';
 // Solo se importa la URL del worker (asset estático); pdfjs-dist en sí se carga
 // de forma diferida (import dinámico) para no sumar peso al bundle principal.
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+// Se usa el build "legacy" (no el moderno) porque trae un polyfill de
+// Promise.withResolvers() — pdf.js lo usa internamente y Safari solo lo soporta
+// desde iOS 17.4; sin el polyfill, en versiones anteriores explota con un
+// "undefined is not a function" al leer el PDF.
+import pdfWorkerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 
 export interface MateriaReconocida {
   materiaId: string;
@@ -104,7 +108,9 @@ function parseLines(lines: string[]): { carreraNombre: string; filas: FilaHistor
 }
 
 async function extractPdfLines(file: File): Promise<string[]> {
-  const pdfjsLib = await import('pdfjs-dist');
+  // pdf.mjs (no ".min") porque solo ese tiene declaraciones de tipos junto al paquete;
+  // Vite igual lo minifica al bundlearlo, así que no se pierde nada en el build final.
+  const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
   const buf = await file.arrayBuffer();
