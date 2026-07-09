@@ -119,7 +119,30 @@ async function withStage<T>(stage: string, fn: () => Promise<T>): Promise<T> {
   }
 }
 
+// pdf.js hace `for await (const chunk of readableStream)` sobre un ReadableStream nativo
+// (en Page.getTextContent, entre otros lugares). Eso requiere ReadableStream.prototype[
+// Symbol.asyncIterator], que Safari en iOS no implementa de forma confiable — ahí revienta
+// con "undefined is not a function". Polyfill estándar basado en getReader().
+function ensureReadableStreamAsyncIterator() {
+  if (typeof ReadableStream === 'undefined') return;
+  const proto = ReadableStream.prototype as unknown as { [Symbol.asyncIterator]?: unknown };
+  if (proto[Symbol.asyncIterator]) return;
+  proto[Symbol.asyncIterator] = async function* (this: ReadableStream) {
+    const reader = this.getReader();
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) return;
+        yield value;
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  };
+}
+
 async function extractPdfLines(file: File): Promise<string[]> {
+  ensureReadableStreamAsyncIterator();
   // pdf.mjs (no ".min") porque solo ese tiene declaraciones de tipos junto al paquete;
   // Vite igual lo minifica al bundlearlo, así que no se pierde nada en el build final.
   const pdfjsLib = await withStage('import pdfjs', () => import('pdfjs-dist/legacy/build/pdf.mjs'));
