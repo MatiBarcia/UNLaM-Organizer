@@ -1462,13 +1462,19 @@ input  { font-family: inherit; }
   .tabla thead { display: none; }
   .tabla, .tabla tbody, .tabla tr { display: block; width: 100%; }
 
+  /* La tabla no debe scrollear en horizontal en mobile — solo vertical */
+  .tabla-scroll { overflow-x: hidden; }
+
   /* Cada fila es una sola línea: código | nombre | estado.
-     Año y nota final se sacan de la lista (se ven en el panel de detalle al tocar la materia). */
+     Año y nota final se sacan de la lista (se ven en el panel de detalle al tocar la materia).
+     width: auto para que el margin no la haga desbordar (heredaría width: 100% de arriba, que
+     sumado al margin excedía el ancho de pantalla y habilitaba un scroll horizontal fantasma). */
   .tabla tr.tabla-row {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     column-gap: 10px;
+    width: auto;
     border: 1px solid var(--brd);
     border-radius: 8px;
     margin: 8px;
