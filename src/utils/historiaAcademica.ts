@@ -107,19 +107,31 @@ function parseLines(lines: string[]): { carreraNombre: string; filas: FilaHistor
   return { carreraNombre, filas };
 }
 
+// Etiqueta cada paso async con dónde ocurrió — el error que vimos en mobile no lo
+// pudimos reproducir en desktop, así que necesitamos saber en qué paso exacto revienta.
+async function withStage<T>(stage: string, fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    const e = err instanceof Error ? err : new Error(String(err));
+    e.message = `[${stage}] ${e.message}`;
+    throw e;
+  }
+}
+
 async function extractPdfLines(file: File): Promise<string[]> {
   // pdf.mjs (no ".min") porque solo ese tiene declaraciones de tipos junto al paquete;
   // Vite igual lo minifica al bundlearlo, así que no se pierde nada en el build final.
-  const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const pdfjsLib = await withStage('import pdfjs', () => import('pdfjs-dist/legacy/build/pdf.mjs'));
   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-  const buf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  const buf = await withStage('file.arrayBuffer', () => file.arrayBuffer());
+  const pdf = await withStage('getDocument', () => pdfjsLib.getDocument({ data: buf }).promise);
   const lines: string[] = [];
 
   for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
+    const page = await withStage(`getPage(${i})`, () => pdf.getPage(i));
+    const content = await withStage(`getTextContent(${i})`, () => page.getTextContent());
 
     const rows: { y: number; items: { x: number; str: string }[] }[] = [];
     for (const item of content.items) {
@@ -154,7 +166,9 @@ export async function procesarHistoriaAcademica(file: File, carrera: Carrera): P
     // en desktop (posible falla al cargar el worker de pdf.js), así que mostramos el
     // detalle real en vez de tragárnoslo en silencio.
     console.error('Error leyendo PDF:', err);
-    const detalle = err instanceof Error ? err.message : String(err);
+    const detalle = err instanceof Error
+      ? `${err.message}${err.stack ? ` — stack: ${err.stack.slice(0, 400)}` : ''}`
+      : String(err);
     return { ok: false, error: `No se pudo leer el PDF. Verificá que el archivo no esté dañado. (${detalle})` };
   }
 
