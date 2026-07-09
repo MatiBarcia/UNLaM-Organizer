@@ -143,8 +143,13 @@ export async function procesarHistoriaAcademica(file: File, carrera: Carrera): P
   let lines: string[];
   try {
     lines = await extractPdfLines(file);
-  } catch {
-    return { ok: false, error: 'No se pudo leer el PDF. Verificá que el archivo no esté dañado.' };
+  } catch (err) {
+    // Diagnóstico: en mobile este catch se dispara por motivos que no pudimos reproducir
+    // en desktop (posible falla al cargar el worker de pdf.js), así que mostramos el
+    // detalle real en vez de tragárnoslo en silencio.
+    console.error('Error leyendo PDF:', err);
+    const detalle = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: `No se pudo leer el PDF. Verificá que el archivo no esté dañado. (${detalle})` };
   }
 
   const { carreraNombre, filas } = parseLines(lines);
