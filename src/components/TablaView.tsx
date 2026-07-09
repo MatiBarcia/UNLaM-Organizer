@@ -20,6 +20,8 @@ interface TablaViewProps {
   showCuatrimestre?: boolean;
   /** false cuando el año de la carrera también fue estimado (el plan oficial no publica ni año ni cuatrimestre) */
   showAnio?: boolean;
+  /** oculta las materias aprobadas de la tabla (los contadores del footer siguen contándolas) */
+  hideApproved?: boolean;
 }
 
 const ALL_ESTADOS: EstadoMateria[] = ['bloqueada', 'disponible', 'cursando', 'regularizada', 'aprobada'];
@@ -130,6 +132,7 @@ export function TablaView({
   onUpdateGrades,
   showCuatrimestre = true,
   showAnio = true,
+  hideApproved = false,
 }: TablaViewProps) {
   const colSpan = 10 - (showCuatrimestre ? 0 : 1) - (showAnio ? 0 : 1);
   const { theme } = useTheme();
@@ -165,6 +168,7 @@ export function TablaView({
 
   const filteredMain = showMain ? materias.filter(m => {
     if (m.tipo === 'electiva_opcion' || m.tipo === 'transversal') return false;
+    if (hideApproved && estadosEfectivos[m.id] === 'aprobada') return false;
     if (yearFilters.length > 0 && !yearFilters.includes(m.anio)) return false;
     if (!matchesQuery(m)) return false;
     if (filterEstados.length > 0 && !filterEstados.includes(estadosEfectivos[m.id])) return false;
@@ -173,6 +177,7 @@ export function TablaView({
 
   const filteredTransversals = showTransversals ? materias.filter(m => {
     if (m.tipo !== 'transversal') return false;
+    if (hideApproved && estadosEfectivos[m.id] === 'aprobada') return false;
     if (!matchesQuery(m)) return false;
     if (filterEstados.length > 0 && !filterEstados.includes(estadosEfectivos[m.id])) return false;
     return true;

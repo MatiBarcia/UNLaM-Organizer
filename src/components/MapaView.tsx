@@ -30,18 +30,24 @@ interface MapaViewProps {
   simMode: boolean;
   simOverrides: ProgresoPerfil;
   onSimClick: (id: string) => void;
+  hideApproved: boolean;
 }
 
-export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMateria, simMode, simOverrides, onSimClick }: MapaViewProps) {
+export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMateria, simMode, simOverrides, onSimClick, hideApproved }: MapaViewProps) {
   const { theme } = useTheme();
   const dark = theme === 'dark';
   const EC = getEstadoColors(theme);
   const [legendOpen, setLegendOpen] = useState(false);
   const [isMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
 
+  const visibleMaterias = useMemo(
+    () => (hideApproved ? materias.filter(m => estadosEfectivos[m.id] !== 'aprobada') : materias),
+    [hideApproved, materias, estadosEfectivos],
+  );
+
   const { nodes: computed, edges: computedEdges } = useMemo(
-    () => buildGraph(materias, estadosEfectivos, milestoneIds),
-    [materias, estadosEfectivos, milestoneIds],
+    () => buildGraph(visibleMaterias, estadosEfectivos, milestoneIds),
+    [visibleMaterias, estadosEfectivos, milestoneIds],
   );
 
   // Bounds of the first two years (four columns), independent of estado (so it doesn't

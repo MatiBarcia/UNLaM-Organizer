@@ -372,6 +372,40 @@ input  { font-family: inherit; }
   font-weight: 600;
 }
 
+/* ── Tooltip ───────────────────────────────────────────────────────── */
+.has-tooltip { position: relative; }
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: var(--txt);
+  color: var(--bg-1);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+.has-tooltip:hover::after { opacity: 1; }
+
+/* ── Ocultar aprobadas ─────────────────────────────────────────────── */
+/* Comparte la base tipo píldora de .sim-btn (queda a su izquierda), pero
+   usa el color de acento en vez del ámbar para diferenciar su función. */
+.hide-approved-btn { cursor: pointer; }
+.hide-approved-btn:hover { border-color: var(--accent); color: var(--accent); }
+.hide-approved-btn--on {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* ── Mapa View ─────────────────────────────────────────────────────── */
 .mapa-wrap { width: 100%; height: 100%; position: relative; }
 

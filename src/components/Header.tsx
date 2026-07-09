@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check } from 'lucide-react';
+import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria, ProgresoPerfil } from '../types';
 import { computeStats, computeMilestone, getEstadoColors } from '../utils/estados';
@@ -13,11 +13,13 @@ interface HeaderProps {
   onViewChange: (v: 'mapa' | 'tabla') => void;
   simMode: boolean;
   onToggleSim: () => void;
+  hideApproved: boolean;
+  onToggleHideApproved: () => void;
   onExport: () => void;
   onImportProgreso: (progreso: ProgresoPerfil) => void;
 }
 
-export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, onExport, onImportProgreso }: HeaderProps) {
+export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, hideApproved, onToggleHideApproved, onExport, onImportProgreso }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -116,6 +118,19 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
             <FlaskConical size={15} />
             {simMode ? 'Salir simulación' : 'Simular'}
           </button>
+          {!simMode && (
+            <button
+              className={`sim-btn hide-approved-btn has-tooltip${hideApproved ? ' hide-approved-btn--on' : ''}`}
+              onClick={onToggleHideApproved}
+              role="switch"
+              aria-checked={hideApproved}
+              aria-label={hideApproved ? 'Mostrar materias aprobadas' : 'Ocultar materias aprobadas'}
+              data-tooltip={hideApproved ? 'Mostrar materias aprobadas' : 'Ocultar materias aprobadas'}
+            >
+              <EyeOff size={17} />
+              <span className="icon-btn-label">{hideApproved ? 'Mostrar aprobadas' : 'Ocultar aprobadas'}</span>
+            </button>
+          )}
           <button className="icon-btn" onClick={() => runAndClose(toggleTheme)} title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}>
             {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             <span className="icon-btn-label">{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
