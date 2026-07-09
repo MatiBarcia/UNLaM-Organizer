@@ -924,166 +924,327 @@ input  { font-family: inherit; }
   border-bottom: 1px solid var(--brd);
 }
 
-/* ── Landing Page ──────────────────────────────────────────────────── */
+/* ── Landing Page ──────────────────────────────────────────────────────
+   Identidad propia para la portada: "legajo académico" — fichas de
+   departamento como solapas de carpeta y carreras como fichero de índice.
+   Los tokens --l-* y las tipografías Fraunces/Plex quedan acotados a
+   .landing para no tocar el tema utilitario del resto de la app. */
 .landing {
+  --l-bg:         #000000;
+  --l-bg-1:       #131313;
+  --l-bg-2:       #000000;
+  --l-brd:        #262626;
+  --l-brd-2:      #3d3d3d;
+  --l-txt:        #f5f5f5;
+  --l-txt-2:      #a3a3a3;
+  --l-txt-3:      #666666;
+  --l-accent:     #3fae6c;
+  --l-accent-dim: rgba(63, 174, 108, 0.14);
+  --l-bg-overlay: rgba(0, 0, 0, 0.88);
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  color: var(--l-txt);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
   overflow-y: auto;
+
+  /* Foto de la sede UNLaM como fondo — casi imperceptible: el degradé sólido
+     (mismo color arriba y abajo) actúa de velo, la imagen apenas se asoma. */
+  background-color: var(--l-bg);
+  background-image: linear-gradient(var(--l-bg-overlay), var(--l-bg-overlay)), url('/campus-unlam.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+[data-theme="light"] .landing {
+  --l-bg:         #ffffff;
+  --l-bg-1:       #ffffff;
+  --l-bg-2:       #f5f5f5;
+  --l-brd:        #e5e5e5;
+  --l-brd-2:      #d4d4d4;
+  --l-txt:        #111111;
+  --l-txt-2:      #525252;
+  --l-txt-3:      #a3a3a3;
+  --l-accent:     #1b5e3a;
+  --l-accent-dim: rgba(27, 94, 58, 0.08);
+  --l-bg-overlay: rgba(255, 255, 255, 0.88);
 }
 
 .landing-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   padding: 0 32px;
   height: 64px;
-  background: var(--bg-1);
-  border-bottom: 1px solid var(--brd);
+  background: var(--l-bg-1);
+  border-bottom: 1px solid var(--l-brd);
   flex-shrink: 0;
 }
 
+.landing-brand-text {
+  justify-self: start;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--l-txt);
+}
+
 .landing-logo-img {
-  height: 52px;
-  width: 52px;
+  justify-self: center;
+  height: 40px;
+  width: 40px;
   object-fit: contain;
 }
+
+.landing .icon-btn {
+  justify-self: end;
+  border-color: var(--l-brd);
+  background: var(--l-bg);
+  color: var(--l-txt-2);
+}
+.landing .icon-btn:hover { border-color: var(--l-accent); color: var(--l-accent); }
 
 .landing-main {
   flex: 1;
-  max-width: 860px;
+  max-width: 820px;
   width: 100%;
   margin: 0 auto;
-  padding: 48px 32px 64px;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .landing-hero {
-  margin-bottom: 48px;
+  margin-bottom: 56px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-}
-
-.landing-hero-logo {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
+  text-align: center;
+  gap: 14px;
 }
 
 .landing-title {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--txt);
-  margin-bottom: 10px;
-  letter-spacing: -0.5px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--l-txt);
+  max-width: 100%;
 }
 
 .landing-subtitle {
   font-size: 15px;
-  color: var(--txt-2);
+  color: var(--l-txt-2);
   line-height: 1.6;
-  max-width: 520px;
+  max-width: 460px;
 }
 
 .landing-select-label {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--txt-3);
-  margin-bottom: 24px;
+  color: var(--l-txt-3);
+  margin-bottom: 18px;
 }
 
-.landing-depto {
-  margin-bottom: 36px;
+.landing-step { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .landing-step { animation: landing-step-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+@keyframes landing-step-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.landing-depto-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--txt-2);
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--brd);
-}
-
-.landing-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+/* Departamentos — solapas de carpeta, color = categoría ---------------- */
+.dept-tabs {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
-.landing-card {
+.dept-tab {
+  --dept-color: var(--l-accent);
+  flex: 1 1 130px;
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  background: var(--bg-1);
-  border: 1px solid var(--brd);
-  border-radius: 10px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  background: var(--l-bg-1);
+  border: 1px solid var(--l-brd);
+  border-top: 3px solid var(--dept-color);
+  border-radius: 3px 3px 8px 8px;
   text-align: left;
   cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.dept-tab:hover {
+  transform: translateY(-3px);
+  border-color: var(--dept-color);
+  box-shadow: 0 12px 22px -14px color-mix(in srgb, var(--dept-color) 70%, transparent);
+}
+.dept-tab:hover .dept-tab-icon { transform: rotate(-6deg); }
+.dept-tab:focus-visible { outline: 2px solid var(--dept-color); outline-offset: 2px; }
+
+.dept-tab-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dept-tab-index {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--l-txt-3);
+}
+
+.dept-tab-icon {
+  color: var(--dept-color);
+  display: flex;
+  transition: transform 0.15s;
+}
+
+.dept-tab-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--l-txt);
+  line-height: 1.32;
+}
+
+.dept-tab-count {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  color: var(--l-txt-3);
+}
+
+/* Volver + título de departamento --------------------------------------- */
+.landing-crumb {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.landing-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid var(--l-brd);
+  border-radius: 6px;
+  color: var(--l-txt-2);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.15s;
-  position: relative;
 }
-.landing-card:hover {
-  border-color: var(--accent);
-  background: var(--bg-2);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-.landing-card:hover .lc-icon { color: var(--accent); }
+.landing-back:hover { border-color: var(--l-accent); color: var(--l-accent); }
 
-.landing-card--disabled {
-  cursor: default;
-  opacity: 0.45;
+.landing-depto-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--l-txt);
+  border-left: 3px solid var(--dept-color, var(--l-accent));
+  padding-left: 10px;
 }
-.landing-card--disabled:hover {
-  border-color: var(--brd);
-  background: var(--bg-1);
-  transform: none;
-  box-shadow: none;
-}
-.landing-card--disabled:hover .lc-icon { color: var(--txt-3); }
 
-.lc-icon {
-  color: var(--txt-3);
+.landing-crumb-count {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--l-txt-3);
+  margin-left: auto;
+}
+
+/* Carreras — fichero de índice ------------------------------------------ */
+.career-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--l-brd);
+}
+
+.career-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--l-brd);
+  text-align: left;
+  cursor: pointer;
+  opacity: 1;
+  transition: background 0.15s;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .career-row { animation: landing-step-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+.career-row:hover { background: var(--l-accent-dim); }
+.career-row:hover .career-name { color: var(--l-accent); }
+.career-row:hover .career-icon { transform: translateX(2px); }
+.career-row:focus-visible { outline: 2px solid var(--l-accent); outline-offset: -2px; }
+
+.career-row--disabled { cursor: default; opacity: 0.5; }
+.career-row--disabled:hover { background: transparent; }
+.career-row--disabled:hover .career-name { color: var(--l-txt); }
+.career-row--disabled:hover .career-icon { transform: none; }
+
+.career-index {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--l-txt-3);
+  width: 16px;
   flex-shrink: 0;
+}
+
+.career-icon {
+  color: var(--l-txt-3);
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.career-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--l-txt);
   transition: color 0.15s;
 }
 
-.lc-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
+.career-leader {
+  flex: 1 1 auto;
+  min-width: 16px;
+  align-self: center;
+  border-bottom: 1px dotted var(--l-brd-2);
+  margin: 0 2px;
 }
 
-.lc-nombre {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--txt);
-  line-height: 1.3;
+.career-plan {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--l-txt-3);
+  flex-shrink: 0;
 }
 
-.lc-plan {
-  font-size: 11px;
-  color: var(--txt-3);
-}
-
-.lc-badge {
+.career-badge {
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 2px 7px;
   border-radius: 4px;
-  background: var(--bg);
-  border: 1px solid var(--brd);
-  color: var(--txt-3);
+  background: var(--l-bg-2);
+  border: 1px solid var(--l-brd);
+  color: var(--l-txt-3);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -1092,12 +1253,12 @@ input  { font-family: inherit; }
   text-align: center;
   padding: 20px;
   font-size: 12px;
-  color: var(--txt-3);
-  border-top: 1px solid var(--brd);
+  color: var(--l-txt-3);
+  border-top: 1px solid var(--l-brd);
 }
 
 .landing-footer a {
-  color: var(--accent);
+  color: var(--l-accent);
   text-decoration: none;
 }
 .landing-footer a:hover { text-decoration: underline; }
@@ -1215,11 +1376,24 @@ input  { font-family: inherit; }
   }
 
   /* Landing */
-  .landing-main { padding: 28px 16px 40px; }
-  .landing-hero-logo { width: 110px; height: 110px; }
-  .landing-title { font-size: 22px; }
+  .landing-main { padding: 32px 16px 40px; }
+  .landing-title { font-size: 32px; }
+  .landing { background-attachment: scroll; }
   .landing-subtitle { font-size: 13px; }
-  .landing-cards { grid-template-columns: 1fr; }
+  .dept-tab {
+    flex-basis: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    border-top: none;
+    border-left: 3px solid var(--dept-color);
+    border-radius: 4px;
+  }
+  .dept-tab-top { gap: 8px; }
+  .dept-tab-name { flex: 1; }
+  .career-row { flex-wrap: wrap; row-gap: 4px; }
+  .career-leader { display: none; }
+  .career-plan { margin-left: auto; }
 }
 
 /* Tabla → tarjetas apiladas, solo en celular en vertical.
