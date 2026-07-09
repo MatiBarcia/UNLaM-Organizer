@@ -11,6 +11,8 @@
   --txt-2: #8c8c8c;
   --txt-3: #565656;
   --accent: #3b82f6;
+  --bg-overlay: rgba(0, 0, 0, 0.88);
+  --table-veil: rgba(16, 16, 16, 0.75);
 
   --legend-bg:        rgba(16, 16, 16, 0.92);
   --row-hover:        rgba(255, 255, 255, 0.04);
@@ -22,15 +24,17 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg:    #f1f5f9;
+  --bg:    #f5f5f5;
   --bg-1:  #ffffff;
-  --bg-2:  #f8fafc;
-  --brd:   #e2e8f0;
-  --brd-2: #cbd5e1;
-  --txt:   #0f172a;
-  --txt-2: #475569;
-  --txt-3: #94a3b8;
+  --bg-2:  #fafafa;
+  --brd:   #e5e5e5;
+  --brd-2: #d4d4d4;
+  --txt:   #171717;
+  --txt-2: #525252;
+  --txt-3: #a3a3a3;
   --accent: #2563eb;
+  --bg-overlay: rgba(255, 255, 255, 0.88);
+  --table-veil: rgba(245, 245, 245, 0.82);
 
   --legend-bg:        rgba(248, 250, 252, 0.92);
   --row-hover:        rgba(0, 0, 0, 0.04);
@@ -49,11 +53,19 @@
 }
 
 body {
-  background: var(--bg);
   color: var(--txt);
   overflow: hidden;
   height: 100vh;
   height: 100dvh;
+
+  /* Misma foto de la sede que en la home, igual de tenue — se asoma detrás
+     del grafo y la tabla (header, panel y barras tienen fondo sólido propio). */
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), url('/campus-unlam.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 #root { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
@@ -121,10 +133,10 @@ input  { font-family: inherit; }
 }
 
 .hdr-career-info { display: flex; flex-direction: column; }
-.hdr-career-name { font-weight: 600; font-size: 13px; color: var(--txt); }
-.hdr-career-plan { font-size: 11px; color: var(--txt-3); }
+.hdr-career-name { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 14px; color: var(--txt); }
+.hdr-career-plan { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10.5px; color: var(--txt-3); }
 
-.hdr-progress-text { display: flex; align-items: baseline; gap: 4px; font-size: 12px; }
+.hdr-progress-text { display: flex; align-items: baseline; gap: 4px; font-size: 12px; font-family: 'IBM Plex Mono', ui-monospace, monospace; }
 .hdr-prog-count  { font-weight: 700; font-size: 15px; color: #4ade80; }
 .hdr-prog-total  { color: var(--txt-2); }
 .hdr-prog-pct    { color: var(--txt-3); font-size: 11px; }
@@ -144,6 +156,7 @@ input  { font-family: inherit; }
 
 .hdr-pills { display: flex; gap: 6px; align-items: center; }
 .hdr-pill {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 10px;
   padding: 2px 8px;
   border-radius: 9999px;
@@ -709,6 +722,9 @@ input  { font-family: inherit; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  /* Velo extra sobre la foto de fondo — en la tabla, con tanto texto y
+     filas, la foto necesita quedar más apagada que en el grafo. */
+  background: var(--table-veil);
 }
 
 .tabla-filters {
@@ -824,9 +840,9 @@ input  { font-family: inherit; }
 .tabla-row.anio-6 .td-code { border-left: 3px solid #14b8a6; }
 
 .tabla td { padding: 6px 10px; vertical-align: middle; }
-.td-code   { font-weight: 700; font-size: 11px; white-space: nowrap; width: 60px; }
+.td-code   { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 600; font-size: 11px; white-space: nowrap; width: 60px; }
 .td-nombre { }
-.td-center { text-align: center; color: var(--txt-2); width: 40px; }
+.td-center { text-align: center; color: var(--txt-2); width: 40px; font-family: 'IBM Plex Mono', ui-monospace, monospace; }
 .td-tipo   { color: var(--txt-3); font-size: 11px; width: 60px; }
 .td-estado { width: 130px; }
 .td-grade  { width: 90px; text-align: center; }
@@ -884,6 +900,7 @@ input  { font-family: inherit; }
   border: 1px solid var(--brd);
   border-radius: 4px;
   color: var(--txt);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 12px;
   text-align: center;
   outline: none;
@@ -910,11 +927,12 @@ input  { font-family: inherit; }
 }
 .footer-stat:first-child { padding-left: 0; }
 .fs-label { font-size: 10px; color: var(--txt-3); font-weight: 500; }
-.fs-val   { font-size: 16px; font-weight: 700; color: var(--txt); }
+.fs-val   { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 16px; font-weight: 700; color: var(--txt); }
 .footer-prom { margin-left: auto; border-right: none; border-left: 1px solid var(--brd); }
 
 .tabla-section-sep td {
   padding: 6px 12px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1379,6 +1397,7 @@ input  { font-family: inherit; }
   .landing-main { padding: 32px 16px 40px; }
   .landing-title { font-size: 32px; }
   .landing { background-attachment: scroll; }
+  body { background-attachment: scroll; }
   .landing-subtitle { font-size: 13px; }
   .dept-tab {
     flex-basis: 100%;
@@ -1468,6 +1487,10 @@ input  { font-family: inherit; }
   .tabla td { padding: 0; border: none; }
   /* El color de año ya se ve en el borde de la tarjeta; sacamos el duplicado del código */
   .tabla tr.tabla-row .td-code { border-left: none; }
+
+  /* El separador de año no es una tarjeta — como ".tabla td" arriba resetea el padding,
+     hay que devolvérselo o queda pegado al borde de la pantalla. */
+  .tabla-section-sep td { padding: 6px 12px 6px 20px; }
 
   /* Solo código, nombre y estado — el resto (año, C°, hs, tipo, notas) queda para horizontal/PC o el panel de detalle */
   .tabla td.td-secondary,

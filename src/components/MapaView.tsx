@@ -44,16 +44,18 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
     [materias, estadosEfectivos, milestoneIds],
   );
 
-  // Bounds of the first year (its two columns), independent of estado (so it doesn't recompute on every progress change)
-  const firstYearBounds = useMemo(() => {
+  // Bounds of the first two years (four columns), independent of estado (so it doesn't
+  // recompute on every progress change). Wide enough to still read as a graph (branching
+  // across years, not just a flat list) while staying reasonably legible on a phone screen.
+  const firstYearsBounds = useMemo(() => {
     const { nodes: layoutNodes } = buildGraph(materias, {});
     const xs = [...new Set(layoutNodes.map(n => n.position.x))].sort((a, b) => a - b);
-    const firstTwo = new Set(xs.slice(0, 2));
+    const firstFew = new Set(xs.slice(0, 3));
     let minX = Infinity;
     let maxX = -Infinity;
     let maxBottom = 0;
     for (const n of layoutNodes) {
-      if (!firstTwo.has(n.position.x)) continue;
+      if (!firstFew.has(n.position.x)) continue;
       const w = (n.width as number) ?? 0;
       const h = (n.height as number) ?? 0;
       minX = Math.min(minX, n.position.x);
@@ -64,10 +66,10 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
   }, [materias]);
 
   const handleInit = useCallback((instance: ReactFlowInstance) => {
-    if (isMobile && firstYearBounds) {
-      instance.fitBounds(firstYearBounds, { padding: 0.02 });
+    if (isMobile && firstYearsBounds) {
+      instance.fitBounds(firstYearsBounds, { padding: 0.06 });
     }
-  }, [isMobile, firstYearBounds]);
+  }, [isMobile, firstYearsBounds]);
 
   const computedWithSim = useMemo(
     () => computed.map(node => {

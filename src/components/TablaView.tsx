@@ -1,4 +1,4 @@
-import { useState, useCallback, type ChangeEvent } from 'react';
+import { Fragment, useState, useCallback, type ChangeEvent } from 'react';
 import { Search, SlidersHorizontal, Award } from 'lucide-react';
 import type { EstadoMateria, Materia, MateriaProgreso, ProgresoPerfil } from '../types';
 import { getEstadoColors } from '../utils/estados';
@@ -274,21 +274,30 @@ export function TablaView({
             </tr>
           </thead>
           <tbody>
-            {filteredMain.map(m => (
-              <MateriaRow
-                key={m.id}
-                materia={m}
-                progreso={progreso[m.id]}
-                estado={estadosEfectivos[m.id] ?? 'bloqueada'}
-                onSetEstado={estado => onSetEstado(m.id, estado)}
-                onRemove={() => onRemoveMateria(m.id)}
-                onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
-                onSelect={() => onSelectMateria(m.id)}
-                showCuatrimestre={showCuatrimestre}
-                showAnio={showAnio}
-                esTituloIntermedio={milestoneIds?.has(m.id) ?? false}
-              />
-            ))}
+            {filteredMain.map((m, i) => {
+              const showYearSep = showAnio && (i === 0 || filteredMain[i - 1].anio !== m.anio);
+              return (
+                <Fragment key={m.id}>
+                  {showYearSep && (
+                    <tr className="tabla-section-sep">
+                      <td colSpan={colSpan}>{m.anio}° Año</td>
+                    </tr>
+                  )}
+                  <MateriaRow
+                    materia={m}
+                    progreso={progreso[m.id]}
+                    estado={estadosEfectivos[m.id] ?? 'bloqueada'}
+                    onSetEstado={estado => onSetEstado(m.id, estado)}
+                    onRemove={() => onRemoveMateria(m.id)}
+                    onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
+                    onSelect={() => onSelectMateria(m.id)}
+                    showCuatrimestre={showCuatrimestre}
+                    showAnio={showAnio}
+                    esTituloIntermedio={milestoneIds?.has(m.id) ?? false}
+                  />
+                </Fragment>
+              );
+            })}
             {filteredMain.length === 0 && filteredTransversals.length === 0 && (
               <tr>
                 <td colSpan={colSpan} className="td-empty">Sin resultados</td>
