@@ -119,8 +119,7 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
     const height = bounds.height + EXPORT_PADDING * 2;
     const viewport = getViewportForBounds(bounds, width, height, 0.1, 2, `${EXPORT_PADDING}px`);
     const bg = dark ? '#101010' : '#f1f5f9';
-
-    const graphDataUrl = await toPng(viewportEl, {
+    const toPngOptions = {
       width,
       height,
       // El grafo no usa las tipografías de Google Fonts (esas son de la home/header),
@@ -136,55 +135,86 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
         height: `${height}px`,
         transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
       },
-    });
+    };
 
-    // Le pegamos una franja con la referencia de colores debajo del grafo, dibujada
-    // aparte en un canvas (evita re-render y no depende de que html-to-image capture
-    // texto DOM con estilos externos).
-    const graphImg = await loadImage(graphDataUrl);
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height + EXPORT_LEGEND_HEIGHT;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    try {
+      // Bug conocido de html-to-image en Safari/iOS: la primera llamada a toPng a
+      // veces devuelve una imagen en blanco. Se descarta y se pide una segunda vez.
+      await toPng(viewportEl, toPngOptions).catch(() => null);
+      const graphDataUrl = await toPng(viewportEl, toPngOptions);
 
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // Tamaño de destino explícito (no el tamaño natural de graphImg): así, si algo
-    // vuelve a devolver una imagen con otra escala, se reescala en vez de desbordar.
-    ctx.drawImage(graphImg, 0, 0, width, height);
+      // Le pegamos una franja con la referencia de colores debajo del grafo, dibujada
+      // aparte en un canvas (evita re-render y no depende de que html-to-image capture
+      // texto DOM con estilos externos).
+      const graphImg = await loadImage(graphDataUrl);
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height + EXPORT_LEGEND_HEIGHT;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('No se pudo crear el canvas.');
 
-    ctx.strokeStyle = dark ? '#2c2c2c' : '#e2e8f0';
-    ctx.beginPath();
-    ctx.moveTo(0, height);
-    ctx.lineTo(width, height);
-    ctx.stroke();
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Tamaño de destino explícito (no el tamaño natural de graphImg): así, si algo
+      // vuelve a devolver una imagen con otra escala, se reescala en vez de desbordar.
+      ctx.drawImage(graphImg, 0, 0, width, height);
 
-    const entries = Object.entries(EC) as [EstadoMateria, (typeof EC)[EstadoMateria]][];
-    const dotRadius = 6;
-    const gap = 10;
-    const itemGap = 28;
-    ctx.font = '600 14px system-ui, sans-serif';
-    ctx.textBaseline = 'middle';
-    const itemWidths = entries.map(([, c]) => dotRadius * 2 + gap + ctx.measureText(c.label).width);
-    const totalWidth = itemWidths.reduce((a, b) => a + b, 0) + itemGap * (entries.length - 1);
-
-    let x = (width - totalWidth) / 2;
-    const y = height + EXPORT_LEGEND_HEIGHT / 2;
-    entries.forEach(([, c], i) => {
-      ctx.fillStyle = c.border;
+      ctx.strokeStyle = dark ? '#2c2c2c' : '#e2e8f0';
       ctx.beginPath();
-      ctx.arc(x + dotRadius, y, dotRadius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = dark ? '#efefef' : '#0f172a';
-      ctx.fillText(c.label, x + dotRadius * 2 + gap, y + 1);
-      x += itemWidths[i] + itemGap;
-    });
+      ctx.moveTo(0, height);
+      ctx.lineTo(width, height);
+      ctx.stroke();
 
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
-    a.download = fileName ?? 'correlativas.png';
-    a.click();
+      const entries = Object.entries(EC) as [EstadoMateria, (typeof EC)[EstadoMateria]][];
+      const dotRadius = 6;
+      const gap = 10;
+      const itemGap = 28;
+      ctx.font = '600 14px system-ui, sans-serif';
+      ctx.textBaseline = 'middle';
+      const itemWidths = entries.map(([, c]) => dotRadius * 2 + gap + ctx.measureText(c.label).width);
+      const totalWidth = itemWidths.reduce((a, b) => a + b, 0) + itemGap * (entries.length - 1);
+
+      let x = (width - totalWidth) / 2;
+      const y = height + EXPORT_LEGEND_HEIGHT / 2;
+      entries.forEach(([, c], i) => {
+        ctx.fillStyle = c.border;
+        ctx.beginPath();
+        ctx.arc(x + dotRadius, y, dotRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = dark ? '#efefef' : '#0f172a';
+        ctx.fillText(c.label, x + dotRadius * 2 + gap, y + 1);
+        x += itemWidths[i] + itemGap;
+      });
+
+      const blob: Blob | null = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('No se pudo generar el archivo de imagen.');
+
+      const name = fileName ?? 'correlativas.png';
+
+      // En iOS Safari, <a download> con una imagen recién generada casi nunca
+      // dispara una descarga real (a veces simplemente no hace nada). La forma
+      // confiable de "guardar una imagen" ahí es la hoja de compartir nativa.
+      const file = new File([blob], name, { type: 'image/png' });
+      if (navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file] });
+        } catch (err) {
+          if (err instanceof Error && err.name === 'AbortError') return; // el usuario canceló
+          throw err;
+        }
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error exportando el mapa:', err);
+      alert('No se pudo exportar la imagen. Probá de nuevo, o hacé una captura de pantalla del mapa.');
+    }
   }, [nodes, dark, fileName, EC]);
 
   useEffect(() => {
