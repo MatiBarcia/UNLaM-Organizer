@@ -26,6 +26,16 @@ import { useTheme } from '../context/ThemeContext';
 const nodeTypes = { materia: MateriaNode, 'col-header': ColumnHeaderNode };
 
 const EXPORT_PADDING = 60;
+const EXPORT_LEGEND_HEIGHT = 56;
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
 
 interface MapaViewProps {
   materias: Materia[];
@@ -100,7 +110,7 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
 
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const handleExportImage = useCallback(() => {
+  const handleExportImage = useCallback(async () => {
     const viewportEl = wrapRef.current?.querySelector<HTMLElement>('.react-flow__viewport');
     if (!viewportEl || nodes.length === 0) return;
 
@@ -108,26 +118,68 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
     const width = bounds.width + EXPORT_PADDING * 2;
     const height = bounds.height + EXPORT_PADDING * 2;
     const viewport = getViewportForBounds(bounds, width, height, 0.1, 2, `${EXPORT_PADDING}px`);
+    const bg = dark ? '#101010' : '#f1f5f9';
 
-    toPng(viewportEl, {
+    const graphDataUrl = await toPng(viewportEl, {
       width,
       height,
       // El grafo no usa las tipografías de Google Fonts (esas son de la home/header),
       // así que evitamos que intente embeberlas — solo generaría un warning por CORS.
       skipFonts: true,
-      backgroundColor: dark ? '#101010' : '#f1f5f9',
+      backgroundColor: bg,
       style: {
         width: `${width}px`,
         height: `${height}px`,
         transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
       },
-    }).then(dataUrl => {
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = fileName ?? 'correlativas.png';
-      a.click();
     });
-  }, [nodes, dark, fileName]);
+
+    // Le pegamos una franja con la referencia de colores debajo del grafo, dibujada
+    // aparte en un canvas (evita re-render y no depende de que html-to-image capture
+    // texto DOM con estilos externos).
+    const graphImg = await loadImage(graphDataUrl);
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height + EXPORT_LEGEND_HEIGHT;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(graphImg, 0, 0);
+
+    ctx.strokeStyle = dark ? '#2c2c2c' : '#e2e8f0';
+    ctx.beginPath();
+    ctx.moveTo(0, height);
+    ctx.lineTo(width, height);
+    ctx.stroke();
+
+    const entries = Object.entries(EC) as [EstadoMateria, (typeof EC)[EstadoMateria]][];
+    const dotRadius = 6;
+    const gap = 10;
+    const itemGap = 28;
+    ctx.font = '600 14px system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    const itemWidths = entries.map(([, c]) => dotRadius * 2 + gap + ctx.measureText(c.label).width);
+    const totalWidth = itemWidths.reduce((a, b) => a + b, 0) + itemGap * (entries.length - 1);
+
+    let x = (width - totalWidth) / 2;
+    const y = height + EXPORT_LEGEND_HEIGHT / 2;
+    entries.forEach(([, c], i) => {
+      ctx.fillStyle = c.border;
+      ctx.beginPath();
+      ctx.arc(x + dotRadius, y, dotRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = dark ? '#efefef' : '#0f172a';
+      ctx.fillText(c.label, x + dotRadius * 2 + gap, y + 1);
+      x += itemWidths[i] + itemGap;
+    });
+
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = fileName ?? 'correlativas.png';
+    a.click();
+  }, [nodes, dark, fileName, EC]);
 
   useEffect(() => {
     if (!exportRef) return;
