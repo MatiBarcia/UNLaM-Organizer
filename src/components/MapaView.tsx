@@ -126,6 +126,10 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
       // El grafo no usa las tipografías de Google Fonts (esas son de la home/header),
       // así que evitamos que intente embeberlas — solo generaría un warning por CORS.
       skipFonts: true,
+      // Sin esto, toPng usa devicePixelRatio (>1 con escalado de pantalla en Windows) y
+      // devuelve una imagen más grande que width×height, desalineando todo lo que
+      // dibujamos después en el canvas (el grafo salía cortado y la leyenda encima).
+      pixelRatio: 1,
       backgroundColor: bg,
       style: {
         width: `${width}px`,
@@ -146,7 +150,9 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
 
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(graphImg, 0, 0);
+    // Tamaño de destino explícito (no el tamaño natural de graphImg): así, si algo
+    // vuelve a devolver una imagen con otra escala, se reescala en vez de desbordar.
+    ctx.drawImage(graphImg, 0, 0, width, height);
 
     ctx.strokeStyle = dark ? '#2c2c2c' : '#e2e8f0';
     ctx.beginPath();
