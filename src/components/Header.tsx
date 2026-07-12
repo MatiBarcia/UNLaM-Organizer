@@ -100,11 +100,16 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
         {menuOpen && <div className="hdr-menu-backdrop" onClick={() => setMenuOpen(false)} />}
 
         <div className={`hdr-actions${menuOpen ? ' hdr-actions--open' : ''}`}>
-          <button className="io-btn" onClick={() => runAndClose(onExport)} title="Exportar progreso a JSON">
+          <button
+            className="io-btn"
+            onClick={() => runAndClose(onExport)}
+            disabled={view !== 'mapa'}
+            title={view === 'mapa' ? 'Exportar el mapa de correlativas como imagen' : 'Cambiá a la vista Mapa para exportar una imagen'}
+          >
             <Download size={15} />
             Exportar
           </button>
-          <button className="io-btn" onClick={() => runAndClose(() => setImportOpen(true))} title="Importar progreso desde tu historia académica o un JSON">
+          <button className="io-btn" onClick={() => runAndClose(() => setImportOpen(true))} title="Importar progreso desde el PDF de tu historia académica">
             <Upload size={15} />
             Importar
           </button>

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import type { Carrera, EstadoMateria, MateriaProgreso, ProgresoPerfil } from '../types';
 import { Header } from './Header';
 import { MapaView } from './MapaView';
@@ -41,22 +41,12 @@ export function AppInner({ carrera }: AppInnerProps) {
     ? (carrera.materias.find(m => m.id === selectedId) ?? null)
     : null;
 
+  // El botón "Exportar" del header vive fuera del árbol de MapaView, así que se
+  // comunica con él a través de este ref en vez de levantar el estado del grafo.
+  const mapaExportRef = useRef<(() => void) | null>(null);
+
   function handleExport() {
-    const data = {
-      version: '1',
-      carreraId: carrera.id,
-      carreraNombre: carrera.nombre,
-      plan: carrera.plan,
-      exportedAt: new Date().toISOString(),
-      progreso,
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `unlam-progreso-${carrera.id}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    mapaExportRef.current?.();
   }
 
   function handleToggleSim() {
@@ -103,6 +93,8 @@ export function AppInner({ carrera }: AppInnerProps) {
               simMode={simMode}
               simOverrides={simOverrides}
               onSimClick={handleSimClick}
+              exportRef={mapaExportRef}
+              fileName={`correlativas-${carrera.id}.png`}
             />
           ) : (
             <TablaView

@@ -228,6 +228,8 @@ input  { font-family: inherit; }
   transition: all 0.15s;
 }
 .io-btn:hover { border-color: var(--accent); color: var(--accent); }
+.io-btn:disabled { opacity: 0.45; cursor: default; }
+.io-btn:disabled:hover { border-color: var(--brd); color: var(--txt-2); }
 .io-btn--primary {
   background: var(--accent);
   border-color: var(--accent);

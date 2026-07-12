@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { X, Upload, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import type { Carrera, ProgresoPerfil } from '../types';
-import { validateImport } from '../utils/validateImport';
 import { procesarHistoriaAcademica, type MateriaReconocida, type MateriaIgnorada } from '../utils/historiaAcademica';
 
 interface ImportModalProps {
@@ -14,48 +13,29 @@ type Stage =
   | { kind: 'idle' }
   | { kind: 'loading' }
   | { kind: 'error'; message: string }
-  | { kind: 'confirm-json'; progreso: ProgresoPerfil; count: number }
   | { kind: 'confirm-pdf'; progreso: ProgresoPerfil; reconocidas: MateriaReconocida[]; ignoradas: MateriaIgnorada[] };
 
 export function ImportModal({ carrera, onClose, onImport }: ImportModalProps) {
   const [stage, setStage] = useState<Stage>({ kind: 'idle' });
 
   async function handleFile(file: File) {
-    const esJson = file.name.toLowerCase().endsWith('.json') || file.type === 'application/json';
     const esPdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
-
-    if (esJson) {
-      setStage({ kind: 'loading' });
-      try {
-        const raw = JSON.parse(await file.text()) as unknown;
-        const result = validateImport(raw, carrera.id);
-        if (!result.ok) {
-          setStage({ kind: 'error', message: result.error });
-          return;
-        }
-        setStage({ kind: 'confirm-json', progreso: result.progreso, count: Object.keys(result.progreso).length });
-      } catch {
-        setStage({ kind: 'error', message: 'El archivo no es un JSON válido.' });
-      }
+    if (!esPdf) {
+      setStage({ kind: 'error', message: 'Formato no soportado. Subí el PDF de tu historia académica.' });
       return;
     }
 
-    if (esPdf) {
-      setStage({ kind: 'loading' });
-      const result = await procesarHistoriaAcademica(file, carrera);
-      if (!result.ok) {
-        setStage({ kind: 'error', message: result.error });
-        return;
-      }
-      setStage({ kind: 'confirm-pdf', progreso: result.progreso, reconocidas: result.reconocidas, ignoradas: result.ignoradas });
+    setStage({ kind: 'loading' });
+    const result = await procesarHistoriaAcademica(file, carrera);
+    if (!result.ok) {
+      setStage({ kind: 'error', message: result.error });
       return;
     }
-
-    setStage({ kind: 'error', message: 'Formato no soportado. Subí un PDF de tu historia académica o un .json exportado desde esta app.' });
+    setStage({ kind: 'confirm-pdf', progreso: result.progreso, reconocidas: result.reconocidas, ignoradas: result.ignoradas });
   }
 
   function handleConfirm() {
-    if (stage.kind === 'confirm-json' || stage.kind === 'confirm-pdf') {
+    if (stage.kind === 'confirm-pdf') {
       onImport(stage.progreso);
       onClose();
     }
@@ -85,15 +65,14 @@ export function ImportModal({ carrera, onClose, onImport }: ImportModalProps) {
                 </ol>
                 <p className="import-modal-hint">
                   Subí ese PDF acá y reconocemos automáticamente las materias aprobadas y sus notas.
-                  También podés subir un <code>.json</code> exportado antes desde esta app.
                 </p>
               </div>
               <label className="import-modal-dropzone">
                 <Upload size={22} />
-                <span>Hacé clic para elegir el archivo (.pdf o .json)</span>
+                <span>Hacé clic para elegir el PDF de tu historia académica</span>
                 <input
                   type="file"
-                  accept=".pdf,.json"
+                  accept=".pdf"
                   style={{ display: 'none' }}
                   onChange={e => {
                     const f = e.target.files?.[0];
@@ -114,18 +93,6 @@ export function ImportModal({ carrera, onClose, onImport }: ImportModalProps) {
               <AlertTriangle size={18} />
               <p>{stage.message}</p>
               <button className="io-btn" onClick={() => setStage({ kind: 'idle' })}>Volver a intentar</button>
-            </div>
-          )}
-
-          {stage.kind === 'confirm-json' && (
-            <div className="import-modal-message import-modal-message--ok">
-              <CheckCircle2 size={18} />
-              <p>Se encontr{stage.count === 1 ? 'ó' : 'aron'} <strong>{stage.count}</strong> {stage.count === 1 ? 'materia' : 'materias'} con progreso guardado en el archivo.</p>
-              <p className="import-modal-warning">Esto reemplazará todo tu progreso actual en esta carrera.</p>
-              <div className="import-modal-actions">
-                <button className="io-btn" onClick={onClose}>Cancelar</button>
-                <button className="io-btn io-btn--primary" onClick={handleConfirm}>Importar y reemplazar</button>
-              </div>
             </div>
           )}
 

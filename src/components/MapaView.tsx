@@ -1,5 +1,6 @@
-import { useMemo, useCallback, useEffect, useState, type MouseEvent } from 'react';
+import { useMemo, useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
 import { Info } from 'lucide-react';
+import { toPng } from 'html-to-image';
 import { IconGitHub, IconInstagram, IconLinkedIn, IconX } from './SocialIcons';
 import {
   ReactFlow,
@@ -9,6 +10,8 @@ import {
   MiniMap,
   useNodesState,
   useEdgesState,
+  getNodesBounds,
+  getViewportForBounds,
   type Node,
   type ReactFlowInstance,
 } from '@xyflow/react';
@@ -22,6 +25,8 @@ import { useTheme } from '../context/ThemeContext';
 
 const nodeTypes = { materia: MateriaNode, 'col-header': ColumnHeaderNode };
 
+const EXPORT_PADDING = 60;
+
 interface MapaViewProps {
   materias: Materia[];
   estadosEfectivos: Record<string, EstadoMateria>;
@@ -30,9 +35,12 @@ interface MapaViewProps {
   simMode: boolean;
   simOverrides: ProgresoPerfil;
   onSimClick: (id: string) => void;
+  fileName?: string;
+  /** El botón "Exportar" del header dispara la exportación llamando a exportRef.current(). */
+  exportRef?: RefObject<(() => void) | null>;
 }
 
-export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMateria, simMode, simOverrides, onSimClick }: MapaViewProps) {
+export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMateria, simMode, simOverrides, onSimClick, fileName, exportRef }: MapaViewProps) {
   const { theme } = useTheme();
   const dark = theme === 'dark';
   const EC = getEstadoColors(theme);
@@ -90,6 +98,43 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
     setEdges(computedEdges);
   }, [computedEdges, setEdges]);
 
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  const handleExportImage = useCallback(() => {
+    const viewportEl = wrapRef.current?.querySelector<HTMLElement>('.react-flow__viewport');
+    if (!viewportEl || nodes.length === 0) return;
+
+    const bounds = getNodesBounds(nodes);
+    const width = bounds.width + EXPORT_PADDING * 2;
+    const height = bounds.height + EXPORT_PADDING * 2;
+    const viewport = getViewportForBounds(bounds, width, height, 0.1, 2, `${EXPORT_PADDING}px`);
+
+    toPng(viewportEl, {
+      width,
+      height,
+      // El grafo no usa las tipografías de Google Fonts (esas son de la home/header),
+      // así que evitamos que intente embeberlas — solo generaría un warning por CORS.
+      skipFonts: true,
+      backgroundColor: dark ? '#101010' : '#f1f5f9',
+      style: {
+        width: `${width}px`,
+        height: `${height}px`,
+        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
+      },
+    }).then(dataUrl => {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = fileName ?? 'correlativas.png';
+      a.click();
+    });
+  }, [nodes, dark, fileName]);
+
+  useEffect(() => {
+    if (!exportRef) return;
+    exportRef.current = handleExportImage;
+    return () => { exportRef.current = null; };
+  }, [exportRef, handleExportImage]);
+
   const handleNodeClick = useCallback(
     (_: MouseEvent, node: Node) => {
       if (node.type !== 'materia') return;
@@ -105,7 +150,7 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
   );
 
   return (
-    <div className="mapa-wrap">
+    <div className="mapa-wrap" ref={wrapRef}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
