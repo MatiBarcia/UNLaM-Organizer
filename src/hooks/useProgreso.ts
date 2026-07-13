@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { MateriaProgreso, ProgresoPerfil } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 export function useProgreso(carreraId: string) {
   const storageKey = `unlam_progreso_v1_${carreraId}`;
+  const { status, cloudProgreso, updateCarreraProgreso } = useAuth();
 
   const [progreso, setProgreso] = useState<ProgresoPerfil>(() => {
     try {
@@ -16,6 +18,28 @@ export function useProgreso(carreraId: string) {
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(progreso));
   }, [progreso, storageKey]);
+
+  // Guarda en Drive (con debounce) cada vez que cambia el progreso, mientras haya sesión.
+  const skipNextSync = useRef(false);
+  useEffect(() => {
+    if (status !== 'logged-in') return;
+    if (skipNextSync.current) { skipNextSync.current = false; return; }
+    updateCarreraProgreso(carreraId, progreso);
+    // Solo cuando progreso cambia — updateCarreraProgreso es estable entre renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progreso, status, carreraId]);
+
+  // Al completarse el login, se trae lo que ya había en la nube para esta carrera:
+  // une con lo que hay en memoria (la nube gana si una materia está en las dos partes).
+  const reconciledFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (status !== 'logged-in' || !cloudProgreso || reconciledFor.current === carreraId) return;
+    reconciledFor.current = carreraId;
+    const cloudForCarrera = cloudProgreso[carreraId];
+    if (!cloudForCarrera) return;
+    skipNextSync.current = true;
+    setProgreso(prev => ({ ...prev, ...cloudForCarrera }));
+  }, [status, cloudProgreso, carreraId]);
 
   const setEstado = useCallback((id: string, estado: MateriaProgreso['estado']) => {
     setProgreso(prev => {

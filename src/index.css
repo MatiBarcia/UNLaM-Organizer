@@ -237,6 +237,27 @@ input  { font-family: inherit; }
 }
 .io-btn--primary:hover { opacity: 0.9; color: #fff; }
 
+/* ── Auth (Google) ─────────────────────────────────────────────────── */
+.auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 3px;
+  border: 1px solid var(--brd);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--txt-3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.auth-btn:hover { border-color: var(--accent); color: var(--accent); }
+.auth-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* ── Import Modal ──────────────────────────────────────────────────── */
 .import-modal-backdrop {
   position: fixed;
@@ -1318,7 +1339,8 @@ input  { font-family: inherit; }
   .hdr-actions--open { display: flex; }
   .hdr-menu-backdrop { position: fixed; inset: 0; z-index: 45; }
   .hdr-actions .io-btn,
-  .hdr-actions .sim-btn { width: 100%; justify-content: flex-start; }
+  .hdr-actions .sim-btn,
+  .hdr-actions .auth-btn { width: 100%; justify-content: flex-start; }
   .hdr-actions .icon-btn { width: 100%; justify-content: flex-start; gap: 6px; padding: 6px 10px; }
   .hdr-actions .icon-btn-label { display: inline; font-size: 12px; font-weight: 500; }
 

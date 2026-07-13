@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check } from 'lucide-react';
+import { Sun, Moon, FlaskConical, Download, Upload, Menu, Award, Check, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Carrera, EstadoMateria, ProgresoPerfil } from '../types';
 import { computeStats, computeMilestone, getEstadoColors } from '../utils/estados';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
+import { IconGoogle } from './SocialIcons';
 import { ImportModal } from './ImportModal';
 
 interface HeaderProps {
@@ -19,6 +21,7 @@ interface HeaderProps {
 
 export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode, onToggleSim, onExport, onImportProgreso }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const { status: authStatus, user, syncConfigured, login, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -125,6 +128,28 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
             {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             <span className="icon-btn-label">{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
           </button>
+          {syncConfigured && (
+            authStatus === 'logged-in' && user ? (
+              <button
+                className="auth-btn"
+                onClick={() => runAndClose(() => { if (confirm('¿Cerrar sesión de Google? Tu progreso sigue guardado en la nube.')) logout(); })}
+                title={`${user.name} (${user.email}) — Cerrar sesión`}
+              >
+                <img src={user.picture} alt="" className="auth-avatar" referrerPolicy="no-referrer" />
+                <LogOut size={13} />
+              </button>
+            ) : (
+              <button
+                className="io-btn"
+                onClick={() => runAndClose(login)}
+                disabled={authStatus === 'logging-in' || authStatus === 'restoring'}
+                title="Guardar tu progreso en Google Drive y sincronizarlo entre dispositivos"
+              >
+                <IconGoogle size={14} />
+                {authStatus === 'logging-in' ? 'Conectando…' : 'Iniciar sesión'}
+              </button>
+            )
+          )}
         </div>
 
         <button className="hdr-hamburger-btn" onClick={() => setMenuOpen(o => !o)} title="Más opciones">

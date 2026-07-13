@@ -42,10 +42,22 @@ El encabezado muestra cuántas materias aprobaste sobre el total de la carrera (
 ### Tema claro / oscuro
 Soporte completo de tema oscuro (por defecto) y claro, con colores optimizados para cada uno.
 
-### Exportar / Importar progreso
-Permite descargar el progreso de una carrera como archivo `.json` y volver a importarlo (por ejemplo, para pasar los datos entre dispositivos manualmente).
+### Exportar mapa / Importar progreso
+"Exportar" descarga una imagen (`.png`) del mapa de correlativas tal como está en ese momento, con la referencia de colores incluida debajo del grafo. Solo está disponible en la vista Mapa.
 
-También se puede importar directamente el PDF de **historia académica** descargado desde Intraconsulta (Mi matrícula → Historia académica → Descargar). Al tocar "Importar" se muestra un instructivo con los pasos para descargarlo y un selector de archivo que acepta tanto el PDF como el `.json`. La app reconoce automáticamente las materias aprobadas y sus notas, verifica que el documento corresponda a la carrera que estás viendo (para no mezclar datos de otra carrera), e ignora los registros de un plan de estudios anterior que ya no correspondan al plan actual. Antes de aplicar los cambios se muestra un resumen de cuántas materias se reconocieron y cuántas se van a ignorar; la importación reemplaza todo el progreso actual de la carrera.
+"Importar" reconoce automáticamente el progreso desde el PDF de **historia académica** descargado desde Intraconsulta (Mi matrícula → Historia académica → Descargar). Al tocar "Importar" se muestra un instructivo con los pasos para descargarlo y un selector de archivo. La app reconoce las materias aprobadas y sus notas, verifica que el documento corresponda a la carrera que estás viendo (para no mezclar datos de otra carrera), e ignora los registros de un plan de estudios anterior que ya no correspondan al plan actual. Antes de aplicar los cambios se muestra un resumen de cuántas materias se reconocieron y cuántas se van a ignorar; la importación reemplaza todo el progreso actual de la carrera.
+
+### Sincronización con Google (opcional)
+Sin iniciar sesión, el progreso se guarda solo en este navegador (`localStorage`), como siempre. Tocando "Iniciar sesión" en el header podés loguearte con Google para sincronizar el progreso entre dispositivos: se guarda en un archivo dentro de la carpeta oculta `appData` de tu Google Drive (invisible entre tus archivos normales, solo esta app puede leerla). Al loguearte por primera vez se fusiona lo que tenías guardado localmente con lo que haya en la nube.
+
+Para habilitar esto en tu propio despliegue hace falta un OAuth Client ID de Google:
+1. [Google Cloud Console](https://console.cloud.google.com/) → creá un proyecto (o usá uno existente).
+2. **APIs & Services → Library** → buscá y habilitá **Google Drive API**.
+3. **APIs & Services → OAuth consent screen** → tipo *External*, completá nombre/email. En la sección de **Scopes**, agregá manualmente `.../auth/drive.appdata` (además de `userinfo.email`/`userinfo.profile`). Mientras la pantalla quede en modo *Testing*, sumá tu cuenta de Google en **Test users** — si no, da `Error 403: access_denied`.
+4. **Credentials → Create Credentials → OAuth client ID** → tipo *Web application* → en **Authorized JavaScript origins** agregá `http://localhost:5173` (dev) y tu dominio de producción.
+5. Copiá el Client ID (no el secreto, no hace falta) a `VITE_GOOGLE_CLIENT_ID` en tu `.env.local` (ver `.env.example`) y como variable de entorno en Vercel.
+
+Si `VITE_GOOGLE_CLIENT_ID` no está configurado, el botón de login directamente no aparece y la app sigue funcionando 100% con `localStorage`.
 
 ### Versión mobile
 La app es completamente usable desde el celular:
@@ -111,6 +123,23 @@ La app es completamente usable desde el celular:
 | Profesorado y Licenciatura en Educación Física | 2000 |
 | Técnico Universitario en Ceremonial y Protocolo | 2007 |
 
+### Artes y Medios de Comunicación
+
+| Carrera | Plan |
+|---------|------|
+| Tecnicatura Universitaria en Animación y Arte Digital | 2020 |
+| Licenciatura en Animación Digital (ciclo de complementación) | 2024 |
+| Tecnicatura Universitaria en Artes Audiovisuales | 2019 |
+| Tecnicatura Universitaria en Artes Escénicas | 2019 |
+| Tecnicatura Universitaria en Desarrollo de Videojuegos | 2024 |
+| Tecnicatura Universitaria en Diseño Gráfico y Digital | 2023 |
+| Tecnicatura Universitaria en Guion Audiovisual | 2021 |
+| Locutor Nacional | 2010 |
+| Tecnicatura Universitaria en Periodismo Deportivo Integral | 2020 |
+| Tecnicatura Universitaria en Publicidad y Comunicación Estratégica | 2025 |
+| Tecnicatura Universitaria en Producción Musical | 2025 |
+| Tecnicatura Universitaria en Producción de Contenidos para la Comunicación | 2024 |
+
 ---
 
 ## Tecnologías
@@ -123,5 +152,7 @@ La app es completamente usable desde el celular:
 | [@xyflow/react](https://reactflow.dev/) | Grafo de correlatividades interactivo |
 | [Lucide React](https://lucide.dev/) | Íconos de la interfaz |
 | [pdfjs-dist](https://mozilla.github.io/pdf.js/) | Lectura del PDF de historia académica para el importador |
-| [Vercel Speed Insights](https://vercel.com/docs/speed-insights) | Métricas de performance en producción |
+| [html-to-image](https://github.com/bubkoo/html-to-image) | Exportar el mapa de correlativas como imagen |
+| [Google Identity Services](https://developers.google.com/identity/oauth2/web) + [Drive API](https://developers.google.com/drive/api) | Login con Google y sincronización del progreso (opcional) |
+| [Vercel Speed Insights](https://vercel.com/docs/speed-insights) + [Analytics](https://vercel.com/docs/analytics) | Métricas de performance y visitas en producción |
 | CSS Custom Properties | Sistema de temas (dark/light) sin frameworks externos |
