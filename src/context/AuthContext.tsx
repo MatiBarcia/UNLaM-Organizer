@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setStatus('logged-out');
       return;
     }
-    requestToken(false)
+    requestToken()
       .then(finishLogin)
       .catch(() => {
         clearAuthHint();
@@ -106,7 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async () => {
     setStatus('logging-in');
     try {
-      const token = await requestToken(true);
+      const token = await requestToken();
       await finishLogin(token);
     } catch (err) {
       console.error('Error iniciando sesión con Google:', err);

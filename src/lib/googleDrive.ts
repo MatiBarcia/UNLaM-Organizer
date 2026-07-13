@@ -47,14 +47,16 @@ function waitForGis(): Promise<void> {
 }
 
 /**
- * Pide un access token. `interactive: false` intenta restaurar la sesión sin mostrar
- * ningún popup (funciona si el navegador todavía tiene la sesión de Google activa y
- * ya se concedieron los permisos antes); si falla, no insiste ni molesta al usuario.
+ * Pide un access token. Sin pasar `prompt`, GIS ya hace lo que queremos: pide
+ * permiso con popup solo la primera vez (o si los permisos fueron revocados), y en
+ * llamadas siguientes lo intenta en silencio si el navegador sigue teniendo la sesión
+ * de Google activa. (El valor `prompt: 'none'` es de la librería vieja gapi.auth2 —
+ * acá no hacía nada útil y por eso la sesión no sobrevivía a un refresh de página.)
  *
  * La API de GIS fija el callback al crear el token client, no en cada pedido de token,
  * así que creamos un client nuevo por llamada para poder resolver la promesa correcta.
  */
-export async function requestToken(interactive: boolean): Promise<string> {
+export async function requestToken(): Promise<string> {
   const clientId = getClientId();
   if (!clientId) throw new Error('Falta configurar VITE_GOOGLE_CLIENT_ID.');
   await waitForGis();
@@ -69,7 +71,7 @@ export async function requestToken(interactive: boolean): Promise<string> {
       },
       error_callback: err => reject(new Error(err.message ?? err.type)),
     });
-    client.requestAccessToken({ prompt: interactive ? '' : 'none' });
+    client.requestAccessToken();
   });
 }
 
