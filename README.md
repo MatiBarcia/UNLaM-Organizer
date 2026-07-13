@@ -50,15 +50,6 @@ Soporte completo de tema oscuro (por defecto) y claro, con colores optimizados p
 ### Sincronización con Google (opcional)
 Sin iniciar sesión, el progreso se guarda solo en este navegador (`localStorage`), como siempre. Tocando "Iniciar sesión" en el header podés loguearte con Google para sincronizar el progreso entre dispositivos: se guarda en un archivo dentro de la carpeta oculta `appData` de tu Google Drive (invisible entre tus archivos normales, solo esta app puede leerla). Al loguearte por primera vez se fusiona lo que tenías guardado localmente con lo que haya en la nube.
 
-Para habilitar esto en tu propio despliegue hace falta un OAuth Client ID de Google:
-1. [Google Cloud Console](https://console.cloud.google.com/) → creá un proyecto (o usá uno existente).
-2. **APIs & Services → Library** → buscá y habilitá **Google Drive API**.
-3. **APIs & Services → OAuth consent screen** → tipo *External*, completá nombre/email. En la sección de **Scopes**, agregá manualmente `.../auth/drive.appdata` (además de `userinfo.email`/`userinfo.profile`). Mientras la pantalla quede en modo *Testing*, sumá tu cuenta de Google en **Test users** — si no, da `Error 403: access_denied`.
-4. **Credentials → Create Credentials → OAuth client ID** → tipo *Web application* → en **Authorized JavaScript origins** agregá `http://localhost:5173` (dev) y tu dominio de producción.
-5. Copiá el Client ID (no el secreto, no hace falta) a `VITE_GOOGLE_CLIENT_ID` en tu `.env.local` (ver `.env.example`) y como variable de entorno en Vercel.
-
-Si `VITE_GOOGLE_CLIENT_ID` no está configurado, el botón de login directamente no aparece y la app sigue funcionando 100% con `localStorage`.
-
 ### Versión mobile
 La app es completamente usable desde el celular:
 
