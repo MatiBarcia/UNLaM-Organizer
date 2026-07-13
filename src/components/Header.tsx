@@ -142,7 +142,7 @@ export function Header({ carrera, estadosEfectivos, view, onViewChange, simMode,
               <button
                 className="io-btn"
                 onClick={() => runAndClose(login)}
-                disabled={authStatus === 'logging-in' || authStatus === 'restoring'}
+                disabled={authStatus === 'logging-in'}
                 title="Guardar tu progreso en Google Drive y sincronizarlo entre dispositivos"
               >
                 <IconGoogle size={14} />

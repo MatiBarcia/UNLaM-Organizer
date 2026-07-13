@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
 import type { ProgresoPerfil } from '../types';
 import {
   requestToken,
@@ -6,15 +6,12 @@ import {
   fetchUserInfo,
   driveLoadAll,
   driveSaveAll,
-  markAuthHint,
-  clearAuthHint,
-  hasAuthHint,
   isGoogleSyncConfigured,
   type GoogleUser,
   type CloudProgreso,
 } from '../lib/googleDrive';
 
-type Status = 'restoring' | 'logged-out' | 'logging-in' | 'logged-in';
+type Status = 'logged-out' | 'logging-in' | 'logged-in';
 
 interface AuthCtx {
   status: Status;
@@ -55,7 +52,7 @@ function readAllLocalProgreso(): CloudProgreso {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<Status>(hasAuthHint() ? 'restoring' : 'logged-out');
+  const [status, setStatus] = useState<Status>('logged-out');
   const [user, setUser] = useState<GoogleUser | null>(null);
   const [cloudProgreso, setCloudProgreso] = useState<CloudProgreso | null>(null);
   const tokenRef = useRef<string | null>(null);
@@ -83,30 +80,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setUser(profile);
     setCloudProgreso(merged);
-    markAuthHint();
     setStatus('logged-in');
   }, []);
-
-  // Al cargar la app, si ya nos habíamos logueado antes, probamos restaurar la sesión
-  // sin mostrar ningún popup. Si falla (sesión de Google vencida, permisos revocados,
-  // etc.) simplemente queda como no-logueado, sin insistir.
-  useEffect(() => {
-    if (!hasAuthHint() || !isGoogleSyncConfigured()) {
-      setStatus('logged-out');
-      return;
-    }
-    requestToken(false)
-      .then(finishLogin)
-      .catch(() => {
-        clearAuthHint();
-        setStatus('logged-out');
-      });
-  }, [finishLogin]);
 
   const login = useCallback(async () => {
     setStatus('logging-in');
     try {
-      const token = await requestToken(true);
+      const token = await requestToken();
       await finishLogin(token);
     } catch (err) {
       console.error('Error iniciando sesión con Google:', err);
@@ -119,7 +99,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (tokenRef.current) revokeToken(tokenRef.current);
     tokenRef.current = null;
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    clearAuthHint();
     setUser(null);
     setCloudProgreso(null);
     setStatus('logged-out');

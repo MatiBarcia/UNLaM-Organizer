@@ -116,6 +116,7 @@ export function AppInner({ carrera }: AppInnerProps) {
           <>
             <div className="panel-backdrop" onClick={() => setSelectedId(null)} />
             <MateriaPanel
+              key={selectedMateria.id}
               materia={selectedMateria}
               progreso={progreso[selectedMateria.id]}
               estadoEfectivo={estadosEfectivos[selectedMateria.id] ?? 'bloqueada'}

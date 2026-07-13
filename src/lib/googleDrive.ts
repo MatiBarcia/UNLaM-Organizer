@@ -10,7 +10,6 @@ const SCOPES = [
 ].join(' ');
 
 const DRIVE_FILE_NAME = 'progreso.json';
-const AUTH_HINT_KEY = 'unlam_google_auth_hint_v1';
 
 export interface GoogleUser {
   name: string;
@@ -47,21 +46,15 @@ function waitForGis(): Promise<void> {
 }
 
 /**
- * Pide un access token.
- *
- * `interactive: false` (restauración automática al cargar la página) usa
- * `prompt: 'none'`: nunca muestra ningún popup, y si no puede verificar la sesión en
- * silencio (el navegador bloquea el chequeo entre pestañas, sesión vencida, etc.)
- * directamente falla — mejor eso que interrumpir con un popup en cada refresh.
- *
- * `interactive: true` (el usuario tocó "Iniciar sesión") no fija `prompt`, así que
- * Google muestra lo que haga falta (selector de cuenta, consentimiento) — está bien
- * porque lo disparó un click real.
+ * Pide un access token. Siempre se dispara desde un click real del usuario en
+ * "Iniciar sesión" — no hay restauración automática al cargar la página, así que
+ * nunca se fija `prompt`, Google muestra lo que haga falta (selector de cuenta,
+ * consentimiento) sin sorpresas.
  *
  * La API de GIS fija el callback al crear el token client, no en cada pedido de token,
  * así que creamos un client nuevo por llamada para poder resolver la promesa correcta.
  */
-export async function requestToken(interactive: boolean): Promise<string> {
+export async function requestToken(): Promise<string> {
   const clientId = getClientId();
   if (!clientId) throw new Error('Falta configurar VITE_GOOGLE_CLIENT_ID.');
   await waitForGis();
@@ -76,24 +69,12 @@ export async function requestToken(interactive: boolean): Promise<string> {
       },
       error_callback: err => reject(new Error(err.message ?? err.type)),
     });
-    client.requestAccessToken(interactive ? undefined : { prompt: 'none' });
+    client.requestAccessToken();
   });
 }
 
 export function revokeToken(token: string): void {
   window.google?.accounts.oauth2.revoke(token);
-}
-
-export function markAuthHint(): void {
-  localStorage.setItem(AUTH_HINT_KEY, '1');
-}
-
-export function clearAuthHint(): void {
-  localStorage.removeItem(AUTH_HINT_KEY);
-}
-
-export function hasAuthHint(): boolean {
-  return localStorage.getItem(AUTH_HINT_KEY) === '1';
 }
 
 export async function fetchUserInfo(token: string): Promise<GoogleUser> {
