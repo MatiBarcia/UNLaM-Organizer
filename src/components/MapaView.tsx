@@ -194,8 +194,11 @@ export function MapaView({ materias, estadosEfectivos, milestoneIds, onSelectMat
       // En iOS Safari, <a download> con una imagen recién generada casi nunca
       // dispara una descarga real (a veces simplemente no hace nada). La forma
       // confiable de "guardar una imagen" ahí es la hoja de compartir nativa.
+      // Restringido a iOS: en desktop (Chrome/Edge) navigator.canShare con
+      // archivos también da true, y ahí sí funciona la descarga directa normal.
+      const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
       const file = new File([blob], name, { type: 'image/png' });
-      if (navigator.canShare?.({ files: [file] })) {
+      if (isIOS && navigator.canShare?.({ files: [file] })) {
         try {
           await navigator.share({ files: [file] });
         } catch (err) {
