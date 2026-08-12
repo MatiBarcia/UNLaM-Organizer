@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { Wifi, WifiOff } from 'lucide-react';
 import type { ProgresoPerfil } from '../types';
 import {
   requestToken,
@@ -35,6 +36,38 @@ export function useAuth(): AuthCtx {
 
 const LOCAL_PROGRESO_PREFIX = 'unlam_progreso_v1_';
 
+interface ConnToast {
+  kind: 'offline' | 'online';
+  message: string;
+}
+
+/**
+ * El evento 'online' del navegador solo dice que el SO ve *alguna* interfaz de red
+ * activa, no que haya internet de verdad — al apagar el Wi-Fi, Chrome a veces lo
+ * reporta con eventos fuera de orden o falsos positivos (por ejemplo si el SO ve por
+ * un instante otra interfaz, una VPN, etc). Antes de anunciar "conexión restablecida"
+ * hacemos un pedido real y liviano; si no llega, el 'online' era falso y lo ignoramos.
+ *
+ * `signal` lo controla quien llama: así, si llega un evento más nuevo (togglear
+ * wifi rápido dispara varios 'online'/'offline' seguidos) se puede abortar este
+ * chequeo en vez de dejarlo resolver tarde y pisar un estado más reciente.
+ */
+async function hasRealConnectivity(signal: AbortSignal): Promise<boolean> {
+  try {
+    // 'no-cors' + generate_204: el mismo endpoint que usa Chrome/Android para sus
+    // propios chequeos de conectividad. No importa leer la respuesta (es opaca), solo
+    // que el pedido llegue y vuelva sin tirar error de red.
+    await fetch('https://www.gstatic.com/generate_204', {
+      mode: 'no-cors',
+      cache: 'no-store',
+      signal,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function readAllLocalProgreso(): CloudProgreso {
   const result: CloudProgreso = {};
   for (let i = 0; i < localStorage.length; i++) {
@@ -55,8 +88,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>('logged-out');
   const [user, setUser] = useState<GoogleUser | null>(null);
   const [cloudProgreso, setCloudProgreso] = useState<CloudProgreso | null>(null);
+  const [toast, setToast] = useState<ConnToast | null>(null);
   const tokenRef = useRef<string | null>(null);
+  const statusRef = useRef<Status>(status);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
 
   const finishLogin = useCallback(async (token: string) => {
     tokenRef.current = token;
@@ -104,25 +143,86 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus('logged-out');
   }, []);
 
+  /** Sube a Drive el `cloudProgreso` que haya en memoria en ese momento (todas las carreras). */
+  const pushToDrive = useCallback(() => {
+    const token = tokenRef.current;
+    if (!token) return;
+    setCloudProgreso(current => {
+      if (current) void driveSaveAll(token, current).catch(err => console.error('Error guardando en Drive:', err));
+      return current;
+    });
+  }, []);
+
   const updateCarreraProgreso = useCallback((carreraId: string, progreso: ProgresoPerfil) => {
     setCloudProgreso(prev => ({ ...(prev ?? {}), [carreraId]: progreso }));
 
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      const token = tokenRef.current;
-      if (!token) return;
-      setCloudProgreso(current => {
-        if (current) void driveSaveAll(token, current).catch(err => console.error('Error guardando en Drive:', err));
-        return current;
-      });
-    }, 1500);
+    saveTimer.current = setTimeout(pushToDrive, 1500);
+  }, [pushToDrive]);
+
+  // Chequeo de conectividad en curso (si lo hay): togglear wifi rápido dispara varios
+  // eventos 'online'/'offline' seguidos, y sin esto cada uno lanzaba su propio fetch de
+  // hasta 3s sin cancelar el anterior — el que terminaba último pisaba el toast con un
+  // estado viejo. Cada evento nuevo aborta el chequeo pendiente antes de seguir.
+  const connCheck = useRef<{ controller: AbortController; timeout: ReturnType<typeof setTimeout> } | null>(null);
+  const cancelPendingConnCheck = useCallback(() => {
+    if (!connCheck.current) return;
+    clearTimeout(connCheck.current.timeout);
+    connCheck.current.controller.abort();
+    connCheck.current = null;
   }, []);
+
+  // Si el navegador pierde/recupera conexión, avisamos con un toast (como YouTube). Al
+  // reconectar, si había sesión de Google activa, además disparamos un guardado: los
+  // cambios hechos offline ya quedaron en `cloudProgreso` en memoria (ver
+  // updateCarreraProgreso), pero el PATCH a Drive mientras no había red falló en
+  // silencio y no se reintenta solo — hay que volver a intentarlo acá.
+  useEffect(() => {
+    const handleOffline = () => {
+      cancelPendingConnCheck();
+      setToast({ kind: 'offline', message: 'Sin conexión — los cambios se siguen guardando en este dispositivo.' });
+    };
+    const handleOnline = () => {
+      cancelPendingConnCheck();
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
+      connCheck.current = { controller, timeout };
+      void (async () => {
+        const ok = await hasRealConnectivity(controller.signal);
+        if (connCheck.current?.controller !== controller) return; // superado por un evento más nuevo
+        clearTimeout(timeout);
+        connCheck.current = null;
+        if (!ok) return; // 'online' falso positivo, se ignora
+        setToast({ kind: 'online', message: 'Conexión restablecida' });
+        if (statusRef.current === 'logged-in') pushToDrive();
+      })();
+    };
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+    return () => {
+      cancelPendingConnCheck();
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, [pushToDrive, cancelPendingConnCheck]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   return (
     <AuthContext.Provider
       value={{ status, user, syncConfigured: isGoogleSyncConfigured(), cloudProgreso, login, logout, updateCarreraProgreso }}
     >
       {children}
+      {toast && (
+        <div className={`conn-toast conn-toast--${toast.kind}`} role="status" aria-live="polite">
+          {toast.kind === 'offline' ? <WifiOff size={16} /> : <Wifi size={16} />}
+          <span>{toast.message}</span>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 }

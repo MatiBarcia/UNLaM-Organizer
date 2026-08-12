@@ -18,7 +18,7 @@ Reglas:
 
 ## Stack y comandos
 
-- **React 19 + TypeScript + Vite 8**, ruteo con `react-router-dom` v7, grafo con `@xyflow/react` (React Flow v12), íconos `lucide-react`, parsing de PDF con `pdfjs-dist` (carga diferida), export de imagen con `html-to-image`.
+- **React 19 + TypeScript + Vite 8**, ruteo con `react-router-dom` v7, grafo con `@xyflow/react` (React Flow v12), íconos `lucide-react`, parsing de PDF con `pdfjs-dist` (carga diferida), export de imagen con `html-to-image`. PWA con `vite-plugin-pwa` (ver sección PWA).
 - Deploy en **Vercel** (`vercel.json`). Analytics: `@vercel/speed-insights` + `@vercel/analytics`.
 - Comandos:
   - `npm run dev` — servidor de desarrollo (Vite).
@@ -73,6 +73,7 @@ Flujo: `main.tsx` → `App.tsx` (rutas + `ThemeProvider` + `AuthProvider`) → p
 - **`AuthContext`** (`src/context/AuthContext.tsx`, hook `useAuth()`): login con Google vía Google Identity Services (`src/lib/googleDrive.ts`, scope `drive.appdata` + perfil). Sin login, la app funciona igual que siempre con `localStorage`. Con login, el progreso se guarda en un archivo `progreso.json` dentro de la carpeta oculta `appDataFolder` del Drive del usuario, invisible entre sus archivos normales.
 - El login es siempre manual (un click en "Iniciar sesión"): no hay restauración automática de sesión al cargar la página, para evitar popups de Google sin que el usuario los pida.
 - Al loguearse por primera vez en un dispositivo, se fusiona lo que había en `localStorage` con lo que haya en la nube (la nube gana en conflictos).
+- `AuthContext` también maneja el toast de reconexión y el resync automático a Drive al recuperar red — ver sección PWA.
 
 ### Import/Export
 
@@ -80,6 +81,18 @@ Flujo: `main.tsx` → `App.tsx` (rutas + `ThemeProvider` + `AuthProvider`) → p
 - **Import**: `ImportModal` acepta el **PDF de historia académica** de Intraconsulta (Mi matrícula → Historia académica → Descargar).
   - `src/utils/historiaAcademica.ts`: parsea el PDF (pdfjs cargado con `import()` dinámico), reconoce materias aprobadas + notas, detecta la carrera y filtra materias de planes viejos.
   - Importar **reemplaza** todo el progreso de la carrera (`importProgreso`).
+
+## PWA
+
+La app es instalable (manifest + service worker vía `vite-plugin-pwa`, configurado en `vite.config.ts`, estrategia `generateSW`/Workbox).
+
+- **El service worker solo existe en build de producción**, no en `npm run dev` (no se seteó `devOptions.enabled`, a propósito, para que el dev server nunca sirva contenido cacheado mientras se itera). Para probarlo localmente: `npm run build && npm run preview` y abrir `http://localhost:4173` — ahí Chrome muestra el ícono de instalar (⊕) en la barra de direcciones.
+- `globPatterns` del precache solo agarra los assets del propio build (`js/css/html/svg/png/jpg/woff2`). Google Fonts, el script de GIS y las llamadas a Drive/Google APIs quedan **fuera a propósito**: siguen dependiendo de red siempre, para no arriesgarse a servir tokens o progreso desactualizado desde caché.
+- Íconos en `public/pwa/` (`icon-192.png`, `icon-512.png`, `icon-512-maskable.png`) + `public/apple-touch-icon.png`, generados a partir de `public/logo.png`. `index.html` tiene el `<link rel="apple-touch-icon">` y `<meta name="theme-color">` a mano (iOS no lee esos campos del manifest).
+- **Toast de conexión** (`AuthContext.tsx`): escucha `online`/`offline` del navegador y muestra un toast tipo snackbar (`.conn-toast` en `index.css`). Dos cuidados no obvios:
+  - El evento `online` del navegador no garantiza internet real (falsos positivos al togglear Wi-Fi) — antes de anunciar "Conexión restablecida" se verifica con un pedido real a `https://www.gstatic.com/generate_204` (`hasRealConnectivity`, con timeout de 3s).
+  - Togglear la red rápido puede disparar varios eventos seguidos; cada uno cancela (`AbortController`) el chequeo de conectividad anterior en curso (`connCheck` ref) para que no quede una promesa vieja pisando el toast con un estado desactualizado.
+  - Si al reconectar hay sesión de Google activa, se dispara `pushToDrive()`: los cambios hechos offline ya están en `cloudProgreso` en memoria, pero el guardado a Drive mientras no había red falla en silencio y no se reintenta solo.
 
 ## Estilos
 

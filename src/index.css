@@ -258,6 +258,39 @@ input  { font-family: inherit; }
   object-fit: cover;
 }
 
+/* ── Toast de conexión (offline / reconectado) ────────────────────────── */
+.conn-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg-1);
+  border: 1px solid var(--brd-2);
+  border-radius: 999px;
+  color: var(--txt);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 300;
+  animation: conn-toast-in 0.2s ease-out;
+}
+.conn-toast svg { flex-shrink: 0; }
+.conn-toast--offline { color: var(--txt-2); }
+.conn-toast--online svg { color: var(--accent); }
+
+@keyframes conn-toast-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (max-width: 768px) {
+  .conn-toast { bottom: 16px; max-width: calc(100vw - 32px); font-size: 12.5px; }
+}
+
 /* ── Import Modal ──────────────────────────────────────────────────── */
 .import-modal-backdrop {
   position: fixed;
