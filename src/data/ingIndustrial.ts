@@ -70,14 +70,14 @@ export const ingenieriaIndustrial: Carrera = {
     { id: '4097', codigo: '4097', nombre: 'Responsabilidad Social Universitaria', anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4082'], tipo: 'obligatoria' },
     { id: '4098', codigo: '4098', nombre: 'Proyecto Final Integrador',            anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4081', '4082', '4088', '4092', '4095'], tipo: 'obligatoria', esAnual: true },
     { id: '4099', codigo: '4099', nombre: 'Automatización Industrial',            anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4067', '4075', '4093'], tipo: 'obligatoria' },
-    { id: '4106', codigo: '4106', nombre: 'Electiva I - Sistemas de Gestión y Mejora Continua', anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4084', '4091'], tipo: 'electiva_slot' },
+    { id: '4106', codigo: '4106', nombre: 'Electiva I - Sistemas de Gestión y Mejora Continua', anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4084', '4091'], tipo: 'obligatoria' },
 
     // ── 5° Año ─ 2° Cuatrimestre ──────────────────────────────────────────
     { id: '4101', codigo: '4101', nombre: 'Instalaciones Industriales',           anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4083', '4085', '4099'], tipo: 'obligatoria' },
     { id: '4104', codigo: '4104', nombre: 'Gestión Industrial',                   anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4088', '4089', '4092', '4094', '4095'], tipo: 'obligatoria' },
     { id: '4105', codigo: '4105', nombre: 'Práctica Profesional Supervisada',     anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4082'], tipo: 'obligatoria' },
-    { id: '4107', codigo: '4107', nombre: 'Electiva II - Manejo y Distribución de Materiales', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4089'], tipo: 'electiva_slot' },
-    { id: '4108', codigo: '4108', nombre: 'Electiva III - Inteligencia Industrial', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4079', '4080', '4091'], tipo: 'electiva_slot' },
+    { id: '4107', codigo: '4107', nombre: 'Electiva II - Manejo y Distribución de Materiales', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4089'], tipo: 'obligatoria' },
+    { id: '4108', codigo: '4108', nombre: 'Electiva III - Inteligencia Industrial', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4079', '4080', '4091'], tipo: 'obligatoria' },
 
     // ── Transversales ──────────────────────────────────────────────────────
     { id: '901', codigo: '901', nombre: 'Inglés Transversal Nivel I',        anio: 1, cuatrimestre: 1, horasSemanales: 4, correlativas: [], tipo: 'transversal' },
