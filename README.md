@@ -50,6 +50,11 @@ Soporte completo de tema oscuro (por defecto) y claro, con colores optimizados p
 ### Sincronización con Google (opcional)
 Sin iniciar sesión, el progreso se guarda solo en este navegador (`localStorage`), como siempre. Tocando "Iniciar sesión" en el header podés loguearte con Google para sincronizar el progreso entre dispositivos: se guarda en un archivo dentro de la carpeta oculta `appData` de tu Google Drive (invisible entre tus archivos normales, solo esta app puede leerla). Al loguearte por primera vez se fusiona lo que tenías guardado localmente con lo que haya en la nube.
 
+### Informar un error
+En la barra inferior de la vista Mapa, al lado de los enlaces a redes, está el botón **"Informar error"**: abre un formulario (nombre, correo y mensaje) para avisar si hay una correlativa mal cargada, una materia que falta o cualquier dato incorrecto. La carrera y el plan desde los que se envía viajan en el mail automáticamente, así que no hace falta aclararlos en el mensaje.
+
+El envío se hace con [Web3Forms](https://web3forms.com) (POST directo desde el browser, sin backend propio). Requiere la variable `VITE_WEB3FORMS_KEY` con el access key de la casilla que recibe los reportes — ver `.env.example`. Si la variable no está definida, el botón directamente no se muestra.
+
 ### Versión mobile
 La app es completamente usable desde el celular:
 

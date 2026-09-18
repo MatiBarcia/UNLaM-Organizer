@@ -406,6 +406,62 @@ input  { font-family: inherit; }
 .import-modal-actions { display: flex; gap: 8px; margin-top: 4px; }
 .import-modal-actions .io-btn { flex: 1; justify-content: center; }
 
+/* ── Modal "Informar error" ────────────────────────────────────────── */
+.reporte-form { display: flex; flex-direction: column; gap: 14px; }
+
+.reporte-carrera {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--brd);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.reporte-carrera-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--txt-3);
+}
+.reporte-carrera-value { font-size: 13px; font-weight: 600; color: var(--txt); }
+
+.reporte-field { display: flex; flex-direction: column; gap: 5px; }
+.reporte-field > span { font-size: 12px; font-weight: 500; color: var(--txt-2); }
+.reporte-field input,
+.reporte-field textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--brd);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 0.15s;
+}
+.reporte-field textarea { resize: vertical; min-height: 96px; line-height: 1.45; }
+.reporte-field input:focus,
+.reporte-field textarea:focus { outline: none; border-color: var(--accent); }
+.reporte-field input::placeholder,
+.reporte-field textarea::placeholder { color: var(--txt-3); }
+.reporte-field input:disabled,
+.reporte-field textarea:disabled { opacity: 0.55; cursor: default; }
+/* Más específico que `.reporte-field > span`, que si no le pisa color y tamaño. */
+.reporte-field > .reporte-field-error { font-size: 11px; font-weight: 400; color: #f87171; }
+
+/* Honeypot: invisible para personas, completable por bots. */
+.reporte-botcheck {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.reporte-spinner { animation: reporte-spin 0.8s linear infinite; }
+@keyframes reporte-spin { to { transform: rotate(360deg); } }
+
 /* ── Sim button ────────────────────────────────────────────────────── */
 .sim-btn {
   display: flex;
@@ -522,6 +578,19 @@ input  { font-family: inherit; }
   border-color: var(--brd-2);
   color: var(--txt);
 }
+
+/* Botón "Informar error": mismo chip que los de redes, pero con etiqueta. */
+.report-btn {
+  width: auto;
+  gap: 6px;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.report-btn:hover { border-color: var(--accent); color: var(--accent); }
 .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; }
 .legend-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
@@ -1488,7 +1557,11 @@ input  { font-family: inherit; }
   .tabla-filters { padding: 8px 10px; gap: 8px; }
 
   /* Mapa — se reubica a la derecha para no chocar con los controles de zoom (abajo-izq) */
-  .mapa-social { display: none; }
+  /* En mobile se esconden las redes por espacio, pero el botón de reporte queda
+     (solo el ícono) para que se pueda informar un error desde el celular. */
+  .mapa-social a { display: none; }
+  .report-btn { width: 32px; padding: 0; }
+  .report-btn-label { display: none; }
   .react-flow__minimap { display: none; }
   .legend-toggle-btn { display: flex; }
   .mapa-legend {

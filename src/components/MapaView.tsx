@@ -1,7 +1,9 @@
 import { useMemo, useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
-import { Info } from 'lucide-react';
+import { Info, MessageSquareWarning } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { IconGitHub, IconInstagram, IconLinkedIn, IconX } from './SocialIcons';
+import { ReportarErrorModal } from './ReportarErrorModal';
+import { isReporteConfigured } from '../lib/web3forms';
 import {
   ReactFlow,
   Background,
@@ -16,7 +18,7 @@ import {
   type ReactFlowInstance,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import type { EstadoMateria, Materia, ProgresoPerfil } from '../types';
+import type { Carrera, EstadoMateria, Materia, ProgresoPerfil } from '../types';
 import { MateriaNode } from './MateriaNode';
 import { ColumnHeaderNode } from './ColumnHeaderNode';
 import { buildGraph } from '../utils/graphLayout';
@@ -38,6 +40,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 interface MapaViewProps {
+  carrera: Carrera;
   materias: Materia[];
   progreso: ProgresoPerfil;
   estadosEfectivos: Record<string, EstadoMateria>;
@@ -53,11 +56,13 @@ interface MapaViewProps {
   exportRef?: RefObject<(() => void) | null>;
 }
 
-export function MapaView({ materias, progreso, estadosEfectivos, milestoneIds, onSelectMateria, simMode, simOverrides, onSimClick, hiddenIds, fileName, exportRef }: MapaViewProps) {
+export function MapaView({ carrera, materias, progreso, estadosEfectivos, milestoneIds, onSelectMateria, simMode, simOverrides, onSimClick, hiddenIds, fileName, exportRef }: MapaViewProps) {
   const { theme } = useTheme();
   const dark = theme === 'dark';
   const EC = getEstadoColors(theme);
   const [legendOpen, setLegendOpen] = useState(false);
+  const [reporteOpen, setReporteOpen] = useState(false);
+  const reporteDisponible = isReporteConfigured();
   const [isMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
 
   const visibleMaterias = useMemo(
@@ -326,8 +331,22 @@ export function MapaView({ materias, progreso, estadosEfectivos, milestoneIds, o
           <a href="https://github.com/MatiBarcia" target="_blank" rel="noopener noreferrer" className="social-btn" title="GitHub">
             <IconGitHub />
           </a>
+          {reporteDisponible && (
+            <button
+              className="social-btn report-btn"
+              onClick={() => setReporteOpen(true)}
+              title="Informar un error en el plan de esta carrera"
+            >
+              <MessageSquareWarning size={15} />
+              <span className="report-btn-label">Informar error</span>
+            </button>
+          )}
         </div>
       </div>
+
+      {reporteOpen && (
+        <ReportarErrorModal carrera={carrera} onClose={() => setReporteOpen(false)} />
+      )}
     </div>
   );
 }
