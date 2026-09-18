@@ -152,6 +152,7 @@ export function AppInner({ carrera }: AppInnerProps) {
         <div className="app-main">
           {view === 'mapa' ? (
             <MapaView
+              carrera={carrera}
               materias={carrera.materias}
               progreso={activeProgreso}
               estadosEfectivos={estadosEfectivos}

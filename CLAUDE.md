@@ -68,6 +68,14 @@ Flujo: `main.tsx` → `App.tsx` (rutas + `ThemeProvider` + `AuthProvider`) → p
 - **`MateriaPanel`**: panel de detalle de una materia (se abre al seleccionarla; en mobile es bottom-sheet). Para un `electiva_slot` muestra un selector para elegir la materia concreta (bloqueando las que ya están elegidas en otro cupo) antes de habilitar el cambio de estado/notas. No se muestra en modo simulación.
 - **`ImportModal`**: importación de progreso desde el PDF de historia académica.
 
+### Informar error
+
+- Botón **"Informar error"** en la barra inferior del Mapa (`.mapa-social`, junto a los links de redes). Abre `ReportarErrorModal` (nombre, correo, mensaje) y envía vía **Web3Forms** (`src/lib/web3forms.ts`): POST JSON a `api.web3forms.com/submit`, sin backend propio ni dependencias nuevas.
+- Requiere `VITE_WEB3FORMS_KEY`. `isReporteConfigured()` gatea el botón: sin la variable no se renderiza (mismo patrón que `isGoogleSyncConfigured()` con el login de Google).
+- La carrera va implícita en el payload (`carrera`, `carrera_id`, `plan`, `url`) y se muestra en el modal, para poder identificar el reporte sin depender del texto del mensaje. Por eso `MapaView` recibe la `Carrera` completa además de `materias`.
+- El form tiene un honeypot (`.reporte-botcheck`): si viene completo se corta el envío y se muestra el mismo mensaje de éxito.
+- En mobile se ocultan los links de redes pero el botón queda (solo ícono) — ver `.mapa-social a { display: none }` en el bloque responsive de `index.css`.
+
 ### Auth / Sync (opcional)
 
 - **`AuthContext`** (`src/context/AuthContext.tsx`, hook `useAuth()`): login con Google vía Google Identity Services (`src/lib/googleDrive.ts`, scope `drive.appdata` + perfil). Sin login, la app funciona igual que siempre con `localStorage`. Con login, el progreso se guarda en un archivo `progreso.json` dentro de la carpeta oculta `appDataFolder` del Drive del usuario, invisible entre sus archivos normales.
