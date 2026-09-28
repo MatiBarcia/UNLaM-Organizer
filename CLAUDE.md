@@ -54,7 +54,7 @@ Flujo: `main.tsx` → `App.tsx` (rutas + `ThemeProvider` + `AuthProvider`) → p
 
 ### Datos de carreras (`src/data/`)
 
-- **`carreras.ts`** exporta `CARRERAS: CarreraInfo[]` (id, nombre, departamento, plan, disponible, `datos`) y `DEPARTAMENTOS`. Es el registro central: para agregar una carrera se crea su archivo de datos y se lo importa acá.
+- **`carreras.ts`** exporta `CARRERAS: CarreraInfo[]` (id, nombre, departamento, plan, disponible, `datos`) y `DEPARTAMENTOS`. Es el registro central: para agregar una carrera se crea su archivo de datos y se lo importa acá. Además, agregar su URL (`/carrera/<id>`) a `public/sitemap.xml`.
 - Cada archivo (`ingInformatica.ts`, `medicina.ts`, etc.) exporta una constante `Carrera` con el array `materias` (id = codigo normalmente, correlativas por id, tipo, año, cuatrimestre, horas) y opcionalmente `tituloIntermedio`, `cuatrimestreEstimado`, `anioEstimado`.
   - `cuatrimestreEstimado: true` → el cuatrimestre fue inferido (el plan oficial solo publica el año); la columna/filtro de cuatrimestre se ocultan.
   - `anioEstimado: true` → ni año ni cuatrimestre son oficiales; se ocultan ambas columnas.
@@ -94,6 +94,13 @@ Flujo: `main.tsx` → `App.tsx` (rutas + `ThemeProvider` + `AuthProvider`) → p
 
 - Dominio actual: `organizador-unlam.vercel.app`. El viejo (`unlam-organizer-matibarcia.vercel.app`) **no** debe tener un redirect 301 en Vercel: tiene que seguir sirviendo la app, porque `localStorage` es por dominio y un redirect de servidor dejaría atrás el progreso de quien no usa login de Google.
 - `src/lib/migracionDominio.ts` (`migrarDominio()`, llamado en `main.tsx` antes de montar React): en el dominio viejo lee las claves `unlam_progreso_v1_*` y redirige al nuevo con el progreso en el fragmento (`#migrar=<base64url>`, nunca llega al servidor). En el nuevo lo fusiona (si una materia ya tiene progreso ahí, gana lo local) y limpia la URL con `history.replaceState`.
+
+## SEO
+
+- Marca de cara a buscadores: **"Organizador UNLaM"**. `index.html` tiene título, descripción, canonical, Open Graph y JSON-LD (`WebSite` + `WebApplication`) de la home.
+- `src/utils/seo.ts` → `useSeo(titulo, descripcion, path)`: cada página (`LandingPage`, `CarreraPage`) actualiza título, descripción, canonical y OG al montarse. El canonical siempre apunta al dominio actual (`SITIO_URL`).
+- `public/robots.txt` y `public/sitemap.xml` son estáticos: el sitemap lista la home y cada carrera disponible (en la landing se llega a las carreras con botones, no links, así que Google las descubre por el sitemap).
+- `public/googlee362f09c07e19986.html` es la verificación de Google Search Console; no borrarlo.
 
 ## PWA
 
