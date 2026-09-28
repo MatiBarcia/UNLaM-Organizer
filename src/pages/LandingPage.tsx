@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Landmark, Scale, Users, Cpu, HeartPulse, Palette, ArrowLeft, Sun, Moon } from 'lucide-react';
 import { CARRERAS, DEPARTAMENTOS } from '../data/carreras';
 import { useTheme } from '../context/ThemeContext';
+import { useSeo } from '../utils/seo';
 
 // Cada departamento es una "ficha" de color propio, como las solapas de una
 // carpeta de archivo — el color no decora, identifica la categoría.
@@ -24,6 +25,12 @@ export function LandingPage() {
   const { theme, toggleTheme } = useTheme();
   const [selectedDepto, setSelectedDepto] = useState<string | null>(null);
   const carrerasDelDepto = selectedDepto ? CARRERAS.filter(c => c.departamento === selectedDepto) : [];
+
+  useSeo(
+    'Organizador UNLaM — Correlativas y progreso de tu carrera',
+    'Organizador UNLaM: visualizá el plan de estudios y las correlativas de tu carrera en la UNLaM, marcá las materias aprobadas y seguí tu progreso hasta recibirte. Gratis.',
+    '/',
+  );
 
   return (
     <div className="landing">

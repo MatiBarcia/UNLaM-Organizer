@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'UNLaM Organizer',
-        short_name: 'UNLaM Organizer',
-        description: 'Seguimiento de progreso académico y mapa de correlatividades para carreras de la UNLaM.',
+        name: 'Organizador UNLaM',
+        short_name: 'Organizador UNLaM',
+        description: 'Mapa de correlativas y seguimiento del progreso académico para las carreras de la UNLaM.',
         lang: 'es-AR',
         start_url: '/',
         scope: '/',
