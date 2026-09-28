@@ -82,6 +82,11 @@ Flujo: `main.tsx` → `App.tsx` (rutas + `ThemeProvider` + `AuthProvider`) → p
   - `src/utils/historiaAcademica.ts`: parsea el PDF (pdfjs cargado con `import()` dinámico), reconoce materias aprobadas + notas, detecta la carrera y filtra materias de planes viejos.
   - Importar **reemplaza** todo el progreso de la carrera (`importProgreso`).
 
+### Migración de dominio
+
+- Dominio actual: `organizador-unlam.vercel.app`. El viejo (`unlam-organizer-matibarcia.vercel.app`) **no** debe tener un redirect 301 en Vercel: tiene que seguir sirviendo la app, porque `localStorage` es por dominio y un redirect de servidor dejaría atrás el progreso de quien no usa login de Google.
+- `src/lib/migracionDominio.ts` (`migrarDominio()`, llamado en `main.tsx` antes de montar React): en el dominio viejo lee las claves `unlam_progreso_v1_*` y redirige al nuevo con el progreso en el fragmento (`#migrar=<base64url>`, nunca llega al servidor). En el nuevo lo fusiona (si una materia ya tiene progreso ahí, gana lo local) y limpia la URL con `history.replaceState`.
+
 ## PWA
 
 La app es instalable (manifest + service worker vía `vite-plugin-pwa`, configurado en `vite.config.ts`, estrategia `generateSW`/Workbox).
