@@ -63,7 +63,7 @@ const materias: Materia[] = [
     { id: '3661', codigo: '3661', nombre: 'Gestión de Proyectos',                     anio: 4, cuatrimestre: 1, horasSemanales: 4, correlativas: ['3651', '3650', '3644'],                        tipo: 'obligatoria' },
 
     // ── 4° Año ─ 2° Cuatrimestre ──────────────────────────────────────────
-    { id: '3662', codigo: '3662', nombre: 'Matemática Aplicada',                      anio: 4, cuatrimestre: 2, horasSemanales: 6, correlativas: ['3651'],                                        tipo: 'obligatoria' },
+    { id: '3662', codigo: '3662', nombre: 'Matemática Aplicada',                      anio: 4, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3651'],                                        tipo: 'obligatoria' },
     { id: '3663', codigo: '3663', nombre: 'Lenguajes y Compiladores',                 anio: 4, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3657'],                                        tipo: 'obligatoria' },
     { id: '3664', codigo: '3664', nombre: 'Inteligencia Artificial',                  anio: 4, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3651', '3646'],                                tipo: 'obligatoria' },
     { id: '3665', codigo: '3665', nombre: 'Gestión Aplicada al Desarrollo de Software II', anio: 4, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3653', '3659'],                          tipo: 'obligatoria' },

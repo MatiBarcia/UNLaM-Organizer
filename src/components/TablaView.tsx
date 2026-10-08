@@ -36,6 +36,8 @@ const TIPO_LABEL: Record<string, string> = {
 interface RowProps {
   materia: Materia;
   progreso: MateriaProgreso | undefined;
+  /** Solo para electiva_slot: id de la materia concreta elegida para el cupo. */
+  electivaId?: string;
   estado: EstadoMateria;
   onSetEstado: (estado: MateriaProgreso['estado']) => void;
   onRemove: () => void;
@@ -46,7 +48,7 @@ interface RowProps {
   esTituloIntermedio: boolean;
 }
 
-function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdateGrades, onSelect, showCuatrimestre, showAnio, esTituloIntermedio }: RowProps) {
+function MateriaRow({ materia, progreso, electivaId, estado, onSetEstado, onRemove, onUpdateGrades, onSelect, showCuatrimestre, showAnio, esTituloIntermedio }: RowProps) {
   const { theme } = useTheme();
   const EC = getEstadoColors(theme);
   const c = EC[estado];
@@ -89,7 +91,7 @@ function MateriaRow({ materia, progreso, estado, onSetEstado, onRemove, onUpdate
       <td className="td-estado" data-label="Estado">
         {materia.tipo === 'electiva_slot' ? (
           <button className="td-electiva-btn" onClick={onSelect} style={{ borderColor: c.border, color: c.text }}>
-            {progreso?.electivaId ? 'Ver electiva' : 'Elegir electiva'}
+            {electivaId ? 'Ver electiva' : 'Elegir electiva'}
           </button>
         ) : (
           <select
@@ -287,6 +289,9 @@ export function TablaView({
           <tbody>
             {filteredMain.map((m, i) => {
               const showYearSep = showAnio && (i === 0 || filteredMain[i - 1].anio !== m.anio);
+              // Para un cupo de electiva, las notas viven en la materia concreta elegida.
+              const electivaId = m.tipo === 'electiva_slot' ? progreso[m.id]?.electivaId : undefined;
+              const targetId = electivaId ?? m.id;
               return (
                 <Fragment key={m.id}>
                   {showYearSep && (
@@ -295,12 +300,14 @@ export function TablaView({
                     </tr>
                   )}
                   <MateriaRow
+                    key={targetId}
                     materia={{ ...m, nombre: getNombreMostrado(m, progreso, materias) }}
-                    progreso={progreso[m.id]}
+                    progreso={getProgresoEfectivo(m, progreso)}
+                    electivaId={electivaId}
                     estado={estadosEfectivos[m.id] ?? 'bloqueada'}
                     onSetEstado={estado => onSetEstado(m.id, estado)}
                     onRemove={() => onRemoveMateria(m.id)}
-                    onUpdateGrades={updates => onUpdateGrades(m.id, updates)}
+                    onUpdateGrades={updates => onUpdateGrades(targetId, updates)}
                     onSelect={() => onSelectMateria(m.id)}
                     showCuatrimestre={showCuatrimestre}
                     showAnio={showAnio}
