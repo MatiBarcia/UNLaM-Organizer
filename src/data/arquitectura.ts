@@ -1,5 +1,9 @@
 import type { Carrera } from '../types';
 
+// Opciones entre las que se puede elegir para cubrir cualquiera de los 2 cupos de
+// Espacio Curricular Optativo (comparten el mismo pool de materias concretas).
+const ELECTIVAS_DISPONIBLES = ['3941', '3942', '3943', '3944', '3945'];
+
 export const arquitectura: Carrera = {
   id: 'arquitectura',
   nombre: 'Arquitectura',
@@ -64,8 +68,8 @@ export const arquitectura: Carrera = {
     { id: '2990', codigo: '2990', nombre: 'Urbanismo II',           anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2981', '2982', '2983', '2984', '2986'], tipo: 'obligatoria' },
     { id: '2991', codigo: '2991', nombre: 'Gestión II',             anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2981', '2982', '2983', '2984', '2987'], tipo: 'obligatoria' },
     { id: '2992', codigo: '2992', nombre: 'Práctica Profesional II', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2977', '2978', '2979', '2980'],         tipo: 'obligatoria' },
-    { id: '2993', codigo: '2993', nombre: 'Espacio Curricular Optativo I',  anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2977', '2978', '2979', '2980'], tipo: 'electiva_slot' },
-    { id: '2994', codigo: '2994', nombre: 'Espacio Curricular Optativo II', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2977', '2978', '2979', '2980'], tipo: 'electiva_slot' },
+    { id: '2993', codigo: '2993', nombre: 'Espacio Curricular Optativo I',  anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2977', '2978', '2979', '2980'], tipo: 'electiva_slot', opciones: ELECTIVAS_DISPONIBLES },
+    { id: '2994', codigo: '2994', nombre: 'Espacio Curricular Optativo II', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2977', '2978', '2979', '2980'], tipo: 'electiva_slot', opciones: ELECTIVAS_DISPONIBLES },
 
     // ── 6° Año ────────────────────────────────────────────────────────────
     { id: '2995', codigo: '2995', nombre: 'Proyecto Final de Carrera', anio: 6, cuatrimestre: 1, horasSemanales: 12, correlativas: ['2989', '2990', '2992', '2993'], tipo: 'obligatoria' },
