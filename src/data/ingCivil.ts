@@ -1,5 +1,9 @@
 import type { Carrera } from '../types';
 
+// Opciones entre las que se puede elegir para cubrir cualquiera de los 3 cupos de
+// optativa (Optativa I/II/III comparten el mismo pool de materias concretas).
+const ELECTIVAS_DISPONIBLES = ['4176', '4177', '4178', '4179', '4180', '4181', '4182', '4183', '4184'];
+
 export const ingenieriaCivil: Carrera = {
   id: 'ing-civil',
   nombre: 'Ingeniería Civil',
@@ -71,11 +75,11 @@ export const ingenieriaCivil: Carrera = {
     { id: '4167', codigo: '4167', nombre: 'Modelización de las Construcciones Metálicas y de Madera', anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4157'], tipo: 'obligatoria' },
     { id: '4168', codigo: '4168', nombre: 'Ingeniería Sanitaria',                     anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4161'], tipo: 'obligatoria' },
     { id: '4169', codigo: '4169', nombre: 'Obras Viales',                             anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['4162'], tipo: 'obligatoria' },
-    { id: '4170', codigo: '4170', nombre: 'Optativa I',                               anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: [], tipo: 'electiva_slot' },
-    { id: '4171', codigo: '4171', nombre: 'Optativa II',                              anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: [], tipo: 'electiva_slot' },
+    { id: '4170', codigo: '4170', nombre: 'Optativa I',                               anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: [], tipo: 'electiva_slot', opciones: ELECTIVAS_DISPONIBLES },
+    { id: '4171', codigo: '4171', nombre: 'Optativa II',                              anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: [], tipo: 'electiva_slot', opciones: ELECTIVAS_DISPONIBLES },
 
     // ── 5° Año ─ 2° Cuatrimestre ──────────────────────────────────────────
-    { id: '4172', codigo: '4172', nombre: 'Optativa III',                             anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: [], tipo: 'electiva_slot' },
+    { id: '4172', codigo: '4172', nombre: 'Optativa III',                             anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: [], tipo: 'electiva_slot', opciones: ELECTIVAS_DISPONIBLES },
     { id: '4173', codigo: '4173', nombre: 'Análisis de Costos',                       anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4133', '4152', '4157', '4158'], tipo: 'obligatoria' },
     { id: '4174', codigo: '4174', nombre: 'Proyecto Final',                           anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4149', '4164', '4165', '4166', '4167', '4169'], tipo: 'obligatoria' },
     { id: '4175', codigo: '4175', nombre: 'Planificación y Gestión de Sistemas del Transporte', anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['4169'], tipo: 'obligatoria' },

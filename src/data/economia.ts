@@ -13,6 +13,10 @@ const CORRELATIVAS_TITULO_INTERMEDIO = [
   '901', '902', '911', '912',
 ];
 
+// Opciones entre las que se puede elegir para cubrir cualquiera de los 2 cupos de
+// electiva (Electiva 1 y 2 comparten el mismo pool de materias concretas).
+const ELECTIVAS_DISPONIBLES = ['3987', '3988', '3989', '3990', '3991', '3992', '3993', '3994'];
+
 export const economia: Carrera = {
   id: 'lic-economia',
   nombre: 'Licenciatura en Economía',
@@ -65,12 +69,12 @@ export const economia: Carrera = {
     { id: '3235', codigo: '3235', nombre: 'Economía Internacional',        anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['3196', '3233'], tipo: 'obligatoria' },
     { id: '3236', codigo: '3236', nombre: 'Economía del Comportamiento',   anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: ['2427', '3196'], tipo: 'obligatoria' },
     { id: '2595', codigo: '2595', nombre: 'Crecimiento y Desarrollo Económico', anio: 5, cuatrimestre: 1, horasSemanales: 6, correlativas: ['3197', '3198'], tipo: 'obligatoria' },
-    { id: '3234', codigo: '3234', nombre: 'Electiva 1',                    anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: CORRELATIVAS_TITULO_INTERMEDIO, tipo: 'electiva_slot' },
+    { id: '3234', codigo: '3234', nombre: 'Electiva 1',                    anio: 5, cuatrimestre: 1, horasSemanales: 4, correlativas: CORRELATIVAS_TITULO_INTERMEDIO, tipo: 'electiva_slot', opciones: ELECTIVAS_DISPONIBLES },
 
     // ── 5° Año ─ 2° Cuatrimestre ──────────────────────────────────────────
     { id: '3237', codigo: '3237', nombre: 'Mercado de Capitales',          anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['3233', '3236'], tipo: 'obligatoria' },
     { id: '2598', codigo: '2598', nombre: 'Política Económica',            anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: ['2431', '3235'], tipo: 'obligatoria' },
-    { id: '3238', codigo: '3238', nombre: 'Electiva 2',                    anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: CORRELATIVAS_TITULO_INTERMEDIO, tipo: 'electiva_slot' },
+    { id: '3238', codigo: '3238', nombre: 'Electiva 2',                    anio: 5, cuatrimestre: 2, horasSemanales: 4, correlativas: CORRELATIVAS_TITULO_INTERMEDIO, tipo: 'electiva_slot', opciones: ELECTIVAS_DISPONIBLES },
     { id: '2599', codigo: '2599', nombre: 'Seminario de Actuación Profesional', anio: 5, cuatrimestre: 2, horasSemanales: 6, correlativas: ['2585', '2427', '3199'], tipo: 'obligatoria' },
 
     // ── Opciones de Electivas ──────────────────────────────────────────────
