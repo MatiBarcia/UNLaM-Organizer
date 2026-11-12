@@ -7,12 +7,29 @@ import type { Carrera } from '../types';
 // "Previstas del C.E.F.I." solo exigen 5 de las 8 (incluyendo obligatoriamente "Taller
 // de Integración" e "Introducción al Trabajo Social"); por simplicidad se modelaron esas
 // dos como correlativas directas. Las marcadas "C.E.F.I. completo" sí exigen las 8.
-// No se incluyó "2846 - Taller de Gestión en Servicios Sociales" por ser una materia
-// específica de otra carrera (Tecnicatura Universitaria en Servicios Sociales).
+//
+// Título intermedio: "Técnico Universitario en Servicios Sociales" (plan de la Tecnicatura
+// en Servicios Sociales /09, descargas/6_TS-TEC-2009-MODIFICACIONESCARGAHORARIA.pdf del
+// Departamento). Requiere el C.E.F.I., las materias de 3° y 4° cuatrimestre, 2785, las de
+// 5° cuatrimestre 2794/2795/2796, Inglés I-II, Computación I-II y además "2846 - Taller de
+// Gestión en Servicios Sociales", que es específica de la Tecnicatura (no del plan de la
+// Licenciatura): por eso se la cargó como optativa.
+const materiasTituloIntermedio = [
+  '2700', '2845', '2702', '2703', '2704', '2705', '2706', '2707', // C.E.F.I.
+  '2786', '2787', '2788', '2790', '2791', '2792', '2785',
+  '2846', '2794', '2795', '2796',
+  '901', '902', '911', '912',
+];
+
 export const trabajoSocial: Carrera = {
   id: 'lic-trabajo-social',
   nombre: 'Licenciatura en Trabajo Social',
   plan: '2009',
+  tituloIntermedio: {
+    nombre: 'Técnico Universitario en Servicios Sociales',
+    descripcion: 'Se obtiene aprobando el C.E.F.I., las materias de 2° año, Metodología de la Investigación I, Trabajo Social III, Antropología Social y Cultural, Estado y Políticas Públicas, el Taller de Gestión en Servicios Sociales, Inglés I-II y Computación I-II.',
+    materiaIds: materiasTituloIntermedio,
+  },
   materias: [
     // ── 1° Año ─ 1° Cuatrimestre ──────────────────────────────────────────
     { id: '2700', codigo: '2700', nombre: 'Economía',                              anio: 1, cuatrimestre: 1, horasSemanales: 4, correlativas: [], tipo: 'obligatoria' },
@@ -43,6 +60,7 @@ export const trabajoSocial: Carrera = {
     { id: '2794', codigo: '2794', nombre: 'Trabajo Social III',                    anio: 3, cuatrimestre: 1, horasSemanales: 4, correlativas: ['2700', '2845', '2702', '2703', '2704', '2705', '2706', '2707', '2790', '2791', '2792'], tipo: 'obligatoria' },
     { id: '2795', codigo: '2795', nombre: 'Antropología Social y Cultural',        anio: 3, cuatrimestre: 1, horasSemanales: 4, correlativas: ['2700', '2845', '2702', '2703', '2704', '2705', '2706', '2707'], tipo: 'obligatoria' },
     { id: '2796', codigo: '2796', nombre: 'Estado y Políticas Públicas',           anio: 3, cuatrimestre: 1, horasSemanales: 4, correlativas: ['2700', '2845', '2702', '2703', '2704', '2705', '2706', '2707', '2788'], tipo: 'obligatoria' },
+    { id: '2846', codigo: '2846', nombre: 'Taller de Gestión en Servicios Sociales', anio: 3, cuatrimestre: 1, horasSemanales: 4, correlativas: ['2700', '2845', '2702', '2703', '2704', '2705', '2706', '2707', '2790', '2791'], tipo: 'optativa' },
 
     // ── 3° Año ─ 2° Cuatrimestre ──────────────────────────────────────────
     { id: '2797', codigo: '2797', nombre: 'Práctica II (grupo y comunidad)',       anio: 3, cuatrimestre: 2, horasSemanales: 10, correlativas: ['2793'], tipo: 'obligatoria' },
