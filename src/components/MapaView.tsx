@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
-import { Info, MessageSquareWarning } from 'lucide-react';
+import { Award, Info, MessageSquareWarning } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { IconGitHub, IconInstagram, IconLinkedIn, IconX } from './SocialIcons';
 import { ReportarErrorModal } from './ReportarErrorModal';
@@ -315,6 +315,12 @@ export function MapaView({ carrera, materias, progreso, estadosEfectivos, milest
                 <span style={{ color: c.text }}>{c.label}</span>
               </div>
             ),
+          )}
+          {carrera.tituloIntermedio && (
+            <div className="legend-item legend-item--titint" title={carrera.tituloIntermedio.nombre}>
+              <Award size={11} />
+              <span>Título intermedio</span>
+            </div>
           )}
         </div>
 
