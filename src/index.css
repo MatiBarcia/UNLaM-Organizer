@@ -449,6 +449,7 @@ input  { font-family: inherit; }
 .reporte-field textarea:disabled { opacity: 0.55; cursor: default; }
 /* Más específico que `.reporte-field > span`, que si no le pisa color y tamaño. */
 .reporte-field > .reporte-field-error { font-size: 11px; font-weight: 400; color: #f87171; }
+.reporte-nota-tecnica { margin: 0; font-size: 11px; line-height: 1.4; color: var(--txt-3); }
 
 /* Honeypot: invisible para personas, completable por bots. */
 .reporte-botcheck {
