@@ -11,6 +11,7 @@ import {
   type GoogleUser,
   type CloudProgreso,
 } from '../lib/googleDrive';
+import { esNavegadorDeApp, getMensajeError, registrarErrorLogin } from '../lib/diagnostico';
 
 type Status = 'logged-out' | 'logging-in' | 'logged-in';
 
@@ -123,14 +124,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async () => {
+    // Google bloquea el login en los navegadores embebidos de apps: avisamos en vez
+    // de abrir un popup que va a fallar.
+    if (esNavegadorDeApp()) {
+      registrarErrorLogin(new Error('navegador de app (login no intentado)'));
+      alert(
+        'Google no permite iniciar sesión desde el navegador de esta app (Instagram, WhatsApp, etc.).\n\n'
+        + 'Tocá el menú ⋯ y elegí "Abrir en el navegador" (Chrome o Safari), y volvé a intentar desde ahí.',
+      );
+      return;
+    }
+
     setStatus('logging-in');
     try {
       const token = await requestToken();
       await finishLogin(token);
     } catch (err) {
       console.error('Error iniciando sesión con Google:', err);
+      registrarErrorLogin(err);
       setStatus('logged-out');
-      alert('No se pudo iniciar sesión con Google. Probá de nuevo.');
+      alert(
+        `No se pudo iniciar sesión con Google (${getMensajeError(err)}).\n\n`
+        + 'Probá de nuevo. Si sigue fallando, usá "Informar error": el detalle técnico se adjunta solo.',
+      );
     }
   }, [finishLogin]);
 

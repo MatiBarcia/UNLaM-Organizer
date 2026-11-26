@@ -1,4 +1,5 @@
 import type { Carrera } from '../types';
+import { getDiagnostico } from './diagnostico';
 
 /**
  * Envío del formulario "Informar error" vía Web3Forms: un POST directo desde el
@@ -48,6 +49,9 @@ export async function enviarReporte(reporte: ReporteError, carrera: Carrera): Pr
         carrera_id: carrera.id,
         plan: carrera.plan,
         url: typeof window !== 'undefined' ? window.location.href : '',
+        // Navegador y último error de login con Google: los reportes de "no me deja
+        // entrar" casi nunca traen detalle, y con esto se ve la causa directo.
+        ...getDiagnostico(),
       }),
     });
 

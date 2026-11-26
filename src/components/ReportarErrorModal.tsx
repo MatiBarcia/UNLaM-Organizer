@@ -123,6 +123,11 @@ export function ReportarErrorModal({ carrera, onClose }: ReportarErrorModalProps
                 {touched && errorMensaje && <span className="reporte-field-error">{errorMensaje}</span>}
               </label>
 
+              <p className="reporte-nota-tecnica">
+                Se adjunta info técnica del navegador (y del último error al iniciar sesión, si hubo uno)
+                para ayudarnos a diagnosticar.
+              </p>
+
               <input
                 type="checkbox"
                 name="botcheck"
